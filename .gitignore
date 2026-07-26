@@ -14,5 +14,7 @@ env/
 .coverage
 htmlcov/
 
+runs/.pending/
+
 .DS_Store
 Thumbs.db

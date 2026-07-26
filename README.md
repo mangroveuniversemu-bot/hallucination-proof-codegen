@@ -15,6 +15,9 @@ This is more than a metadata-aware code generator:
 - SQLGlot traces final outputs through CTEs, aliases, expressions, stars, and
   window functions to physical source columns.
 - PII policy blocks executable-but-unsafe SQL.
+- An explicit result contract enforces shape, row count, uniqueness, bucket
+  distribution, and NULL semantics. For this dataset, all 38 missing lifetime
+  values must become exactly `0`.
 - Downstream criticality converts lineage into `AUTO_PR`, `REVIEW_REQUIRED`,
   or `BLOCK_AUTO_MERGE`.
 - Repair is bounded to one attempt. Provider failure or a second gate failure
@@ -153,22 +156,77 @@ flowchart LR
     B --> C["Context builder<br/>schema + tags + upstream/downstream + exact paths"]
     C --> D["GLM SQL generation"]
     D --> E["Schema Gate"]
-    E --> F["Governance Gate"]
-    E -->|"FAIL"| G["Structured failure JSON"]
-    F -->|"FAIL"| G
-    G --> H["GLM repair<br/>maximum one attempt"]
-    H --> E
-    F -->|"PASS"| I["Downstream Impact Gate"]
-    I -->|"LOW"| J["AUTO_PR"]
-    I -->|"MEDIUM"| K["REVIEW_REQUIRED"]
-    I -->|"HIGH"| L["BLOCK_AUTO_MERGE"]
-    J --> M["DuckDB runtime + DataHub write-back"]
-    K --> M
-    L --> N["Decision write-back / audit"]
+    E --> F["DuckDB Runtime Gate"]
+    F --> G["Result + NULL Contract"]
+    G --> H["PII Governance Gate"]
+    E -->|"FAIL"| I["Structured failure JSON"]
+    F -->|"FAIL"| I
+    G -->|"FAIL"| I
+    H -->|"FAIL"| I
+    I --> J["GLM repair<br/>maximum one attempt"]
+    J --> E
+    H -->|"PASS"| K["Immutable evidence manifest"]
+    K --> L["DataHub write-back"]
 ```
 
 There is no unlimited repair cycle. A repaired candidate is evaluated once;
 if it still fails, or if the provider errors, admission is blocked.
+
+The three-minute demo intentionally stops before the optional downstream
+impact decision. Its causal story remains readable: Blind fails schema;
+Grounded passes schema, runtime, and result quality but fails PII; one bounded
+repair passes all four gates and writes evidence back to DataHub. The separate
+impact gate remains available for change-admission routing.
+
+## One-command fair demo
+
+`orchestrator.py` creates the Blind and Grounded candidates under a strict
+context-ablation contract:
+
+- identical user task;
+- identical `z-ai/glm-5.2` model and `temperature=0`;
+- identical system-prompt template outside `<DATAHUB_CONTEXT>`;
+- no selective retry of either initial candidate;
+- at most one repair, triggered only by a structured gate failure.
+
+The safe-output contract requires 100 unique customer rows, quintiles 1 through 5
+with 20 rows each, and non-NULL `customer_key`, `lifetime_value`, and
+`value_quintile`. It also asserts that the observed 38 source NULLs become
+exactly 38 zero values, so replacing NULL with an arbitrary constant cannot
+pass.
+
+```powershell
+python src/orchestrator.py run --require-clean-git --writeback
+```
+
+Every completed run is published only after it has been sealed. Its directory
+contains both prompts, task, context/policy/contract snapshots, generated SQL,
+gate reports, and the write-back receipt. `manifest.json` records the source
+commit, dependency versions, prompt hashes, lockfile hash, and SHA-256 plus
+byte count for every artifact. Existing run IDs cannot be overwritten, and
+tampering is detected with:
+
+```powershell
+python src/orchestrator.py verify runs/<run-id>
+```
+
+Incomplete provider calls remain under ignored `runs/.pending/`; only sealed
+directories appear under `runs/<run-id>`.
+
+The result contract also catches metadata drift: the checked-in DataHub schema
+reports `customer_lifetime_value` as non-nullable, while the real DuckDB table
+contains 38 NULLs. Runtime evidence, not the declaration alone, decides the
+gate.
+
+## Optional downstream admission
+
+```mermaid
+flowchart LR
+    A["All core assurance gates PASS"] --> B["Downstream Impact Gate"]
+    B -->|"LOW"| C["AUTO_PR"]
+    B -->|"MEDIUM"| D["REVIEW_REQUIRED"]
+    B -->|"HIGH"| E["BLOCK_AUTO_MERGE"]
+```
 
 ## How each stage works
 
@@ -183,12 +241,17 @@ if it still fails, or if the provider errors, admission is blocked.
    PII policy. Its standalone `--repair` mode is a deterministic AST rewrite.
 5. `impact_gate.py` maps real downstream criticality to an admission action.
    Unknown criticality defaults to reviewer; unverified paths cannot auto-PR.
-6. `admission_controller.py` converts a schema/governance failure to JSON,
+6. `result_gate.py` executes read-only DuckDB SQL and enforces the versioned
+   output and NULL-default contract.
+7. `orchestrator.py` performs the fair paired generation, evaluates schema,
+   runtime, result quality, and governance, permits one structured repair, and
+   seals an immutable evidence run.
+8. `admission_controller.py` converts a schema/governance failure to JSON,
    sends that JSON and the original SQL to GLM once, re-runs both gates, then
    applies downstream impact admission.
-7. `writeback.py` appends evidence to DataHub `institutionalMemory`, reads it
+9. `writeback.py` appends evidence to DataHub `institutionalMemory`, reads it
    back, and confirms the ingestion-owned description is unchanged.
-8. `benchmark.py` runs the paired three-world experiment, executes all four
+10. `benchmark.py` runs the paired three-world experiment, executes all four
    gates, preserves raw SQL, and computes VMR without dropping failures.
 
 The checked-in `customers` context contains all 7 fields, three upstream
@@ -221,7 +284,8 @@ hash UDF can be added as an allowed action when policy metadata defines it.
 
 ## Automated test evidence
 
-The suite covers governance lineage, CTEs, aliases, stars, `COUNT(*)`, window functions,
+The suite covers governance lineage, CTEs, aliases, stars, `COUNT(*)`, window
+functions, explicit NULL replacement counts, manifest tamper detection,
 exact dataset selection, representation-copy filtering, LOW/MEDIUM/HIGH
 routing, unknown criticality, unverified paths, one-call repair, failed repair,
 provider timeout behavior, reference-answer preflight, and ordered result
@@ -258,6 +322,8 @@ hallucination-proof-codegen/
 |   |-- governance_gate.py
 |   |-- impact_gate.py
 |   |-- admission_controller.py
+|   |-- result_gate.py
+|   |-- orchestrator.py
 |   |-- bootstrap_governance.py
 |   |-- bootstrap_impact_demo.py
 |   |-- benchmark.py
@@ -275,7 +341,14 @@ hallucination-proof-codegen/
 |   |-- test_impact_gate.py
 |   |-- test_admission_controller.py
 |   |-- test_validator.py
-|   `-- test_benchmark.py
+|   |-- test_benchmark.py
+|   |-- test_result_gate.py
+|   `-- test_orchestrator.py
+|-- demo/
+|   |-- task.txt
+|   `-- result_contract.json
+|-- runs/
+|   `-- <sealed-run-id>/
 |-- examples/
 |   |-- context_bundle.json
 |   |-- output_pii_candidate.sql
@@ -286,7 +359,8 @@ hallucination-proof-codegen/
 |-- .env.example
 |-- .gitignore
 |-- LICENSE
-`-- requirements.txt
+|-- requirements.txt
+`-- requirements.lock
 ```
 
 The dbt Labs test project is intentionally not vendored into this repository.
@@ -300,7 +374,7 @@ git clone https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen.
 cd hallucination-proof-codegen
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
+python -m pip install --require-hashes -r requirements.lock
 Copy-Item .env.example .env
 ```
 

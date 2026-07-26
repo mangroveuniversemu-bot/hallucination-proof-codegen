@@ -14,6 +14,7 @@ from openai import OpenAI
 
 MODEL = "z-ai/glm-5.2"
 BASE_URL = "https://integrate.api.nvidia.com/v1"
+GENERATION_TEMPERATURE = 0.0
 BLIND_TABLE_NAME = "customers"
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 CONTEXT_PATH = PROJECT_ROOT / "examples" / "context_bundle.json"
@@ -156,7 +157,12 @@ def build_ssl_context() -> ssl.SSLContext:
     return ssl_context
 
 
-def generate_sql(task: str, system_prompt: str) -> str:
+def generate_sql(
+    task: str,
+    system_prompt: str,
+    *,
+    temperature: float = GENERATION_TEMPERATURE,
+) -> str:
     api_key = os.environ.get("NVIDIA_API_KEY")
     if not api_key:
         raise RuntimeError(
@@ -172,6 +178,7 @@ def generate_sql(task: str, system_prompt: str) -> str:
         )
         response = client.chat.completions.create(
             model=MODEL,
+            temperature=temperature,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": task},
