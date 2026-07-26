@@ -1,0 +1,52 @@
+{
+  "table_name": "customers",
+  "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.main.customers,PROD)",
+  "fields": [
+    {
+      "fieldPath": "customer_id",
+      "nativeDataType": "INTEGER",
+      "description": "This is a unique identifier for a customer",
+      "nullable": false
+    },
+    {
+      "fieldPath": "first_name",
+      "nativeDataType": "VARCHAR",
+      "description": "Customer's first name. PII.",
+      "nullable": false
+    },
+    {
+      "fieldPath": "first_order",
+      "nativeDataType": "DATE",
+      "description": "Date (UTC) of a customer's first order",
+      "nullable": false
+    },
+    {
+      "fieldPath": "last_name",
+      "nativeDataType": "VARCHAR",
+      "description": "Customer's last name. PII.",
+      "nullable": false
+    },
+    {
+      "fieldPath": "most_recent_order",
+      "nativeDataType": "DATE",
+      "description": "Date (UTC) of a customer's most recent order",
+      "nullable": false
+    },
+    {
+      "fieldPath": "number_of_orders",
+      "nativeDataType": "BIGINT",
+      "description": "Count of the number of orders a customer has placed",
+      "nullable": false
+    },
+    {
+      "fieldPath": "customer_lifetime_value",
+      "nativeDataType": "DOUBLE",
+      "nullable": false
+    }
+  ],
+  "upstream_tables": [
+    "stg_customers",
+    "stg_orders",
+    "stg_payments"
+  ]
+}

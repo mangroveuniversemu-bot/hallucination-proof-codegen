@@ -1,0 +1,16 @@
+08:57:53  Running with dbt=1.11.6
+08:57:54  Registered adapter: duckdb=1.10.1
+08:57:56  Found 5 models, 3 seeds, 20 data tests, 1 sql operation, 474 macros
+08:57:56
+08:57:56  Concurrency: 24 threads (target='dev')
+08:57:56
+08:57:56  Encountered an error:
+Runtime Error
+  Runtime Error in sql_operation inline_query (from remote system.sql)
+    Binder Error: Referenced column "clv" not found in FROM clause!
+    Candidate bindings: "customer_lifetime_value"
+
+    LINE 7:         clv,
+                    ^
+
+Process exit code: 1

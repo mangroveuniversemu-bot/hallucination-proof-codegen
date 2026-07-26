@@ -1,0 +1,16 @@
+08:58:12  Running with dbt=1.11.6
+08:58:13  Registered adapter: duckdb=1.10.1
+08:58:15  Found 5 models, 3 seeds, 20 data tests, 1 sql operation, 474 macros
+08:58:15
+08:58:15  Concurrency: 24 threads (target='dev')
+08:58:15
+Previewing inline node:
+| clv_band | customer_count | min_clv | avg_clv | max_clv |
+| -------- | -------------- | ------- | ------- | ------- |
+|        1 |             20 |       1 |    7.70 |      16 |
+|        2 |             20 |      17 |   25.25 |      30 |
+|        3 |             20 |      30 |   42.45 |      64 |
+|        4 |             20 |      65 |   82.00 |      99 |
+|        5 |             20 |         |         |         |
+
+Process exit code: 0
