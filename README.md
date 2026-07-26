@@ -213,6 +213,31 @@ python src/orchestrator.py verify runs/<run-id>
 Incomplete provider calls remain under ignored `runs/.pending/`; only sealed
 directories appear under `runs/<run-id>`.
 
+### Recorded fair run
+
+Run [`20260726T182727Z-cbad85e7`](runs/20260726T182727Z-cbad85e7/) was generated
+once from clean source commit `39acb2d` and was not selectively resampled.
+
+| Candidate | Schema | Runtime | Result / NULL | Governance |
+| --- | --- | --- | --- | --- |
+| Blind | **FAIL**: invented `customer_key`, `given_name`, `family_name`, `lifetime_value` | **FAIL**: DuckDB Binder Error | SKIPPED | SKIPPED |
+| Grounded initial | **PASS** | **PASS** | **PASS** | **FAIL**: `given_name` and `family_name` expose DataHub-tagged PII |
+| One repair | **PASS** | **PASS** | **PASS**: 100 rows, 38/38 zero replacements, five buckets of 20 | **PASS** |
+
+The repair report allowed only `exclude`; GLM removed the two name projections
+without changing the segmentation. DataHub write-back then returned `SUCCESS`
+and read the evidence entry back while preserving the dataset description.
+
+Evidence:
+
+- [Blind SQL](runs/20260726T182727Z-cbad85e7/sql/blind.sql)
+- [Grounded initial SQL](runs/20260726T182727Z-cbad85e7/sql/grounded_initial.sql)
+- [Once-repaired SQL](runs/20260726T182727Z-cbad85e7/sql/repaired.sql)
+- [All gate results and structured repair report](runs/20260726T182727Z-cbad85e7/gate_report.json)
+- [Sealed manifest](runs/20260726T182727Z-cbad85e7/manifest.json), SHA-256
+  `ae1e963722bfaa224fc71185998ed085e90de57767922d7079eabc797294ec1b`
+- [Verified DataHub write-back receipt](runs/20260726T182727Z-cbad85e7/writeback_receipt.json)
+
 The result contract also catches metadata drift: the checked-in DataHub schema
 reports `customer_lifetime_value` as non-nullable, while the real DuckDB table
 contains 38 NULLs. Runtime evidence, not the declaration alone, decides the

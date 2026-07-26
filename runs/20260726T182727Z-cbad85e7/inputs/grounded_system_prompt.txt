@@ -1,0 +1,74 @@
+You are an expert analytics engineer writing DuckDB-compatible dbt SQL.
+
+Source model: customers
+
+<DATAHUB_CONTEXT>
+{
+  "status": "AVAILABLE",
+  "table_name": "customers",
+  "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.main.customers,PROD)",
+  "fields": [
+    {
+      "fieldPath": "customer_id",
+      "nativeDataType": "INTEGER",
+      "description": "This is a unique identifier for a customer",
+      "nullable": false
+    },
+    {
+      "fieldPath": "first_name",
+      "nativeDataType": "VARCHAR",
+      "description": "Customer's first name. PII.",
+      "nullable": false,
+      "editedTags": [
+        "PII"
+      ]
+    },
+    {
+      "fieldPath": "first_order",
+      "nativeDataType": "DATE",
+      "description": "Date (UTC) of a customer's first order",
+      "nullable": false
+    },
+    {
+      "fieldPath": "last_name",
+      "nativeDataType": "VARCHAR",
+      "description": "Customer's last name. PII.",
+      "nullable": false,
+      "editedTags": [
+        "PII"
+      ]
+    },
+    {
+      "fieldPath": "most_recent_order",
+      "nativeDataType": "DATE",
+      "description": "Date (UTC) of a customer's most recent order",
+      "nullable": false
+    },
+    {
+      "fieldPath": "number_of_orders",
+      "nativeDataType": "BIGINT",
+      "description": "Count of the number of orders a customer has placed",
+      "nullable": false
+    },
+    {
+      "fieldPath": "customer_lifetime_value",
+      "nativeDataType": "DOUBLE",
+      "nullable": false
+    }
+  ],
+  "upstream_tables": [
+    "stg_customers",
+    "stg_orders",
+    "stg_payments"
+  ]
+}
+</DATAHUB_CONTEXT>
+
+The DATAHUB_CONTEXT block is the only experimental variable. The business task,
+model, decoding parameters, source model, and all other instructions are held
+constant. If the block says AVAILABLE, treat its field list and governance
+metadata as complete and authoritative: never invent a source column. If it
+says UNAVAILABLE, infer the source columns needed to attempt the task.
+
+Query the source with {{ ref('customers') }}. Derived expressions and
+output aliases are allowed. Return SQL only, without Markdown fences or prose.

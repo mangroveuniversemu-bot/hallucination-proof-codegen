@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "contract_id": "customers_clv_quintile_safe_output_v1",
+  "description": "The safe post-governance interface. Name outputs may appear in the initial candidate, but the required analytics outputs must remain correct and NULL-free.",
+  "allow_extra_columns": true,
+  "required_columns": [
+    "customer_key",
+    "lifetime_value",
+    "value_quintile"
+  ],
+  "exact_row_count": 100,
+  "non_null_columns": [
+    "customer_key",
+    "lifetime_value",
+    "value_quintile"
+  ],
+  "null_defaults": {
+    "lifetime_value": {
+      "value": 0,
+      "expected_replacements": 38,
+      "source_observation": "38 of 100 customers have NULL customer_lifetime_value; no non-NULL source value equals 0."
+    }
+  },
+  "unique_columns": [
+    "customer_key"
+  ],
+  "numeric_ranges": {
+    "value_quintile": {
+      "min": 1,
+      "max": 5
+    }
+  },
+  "value_counts": {
+    "value_quintile": {
+      "1": 20,
+      "2": 20,
+      "3": 20,
+      "4": 20,
+      "5": 20
+    }
+  }
+}

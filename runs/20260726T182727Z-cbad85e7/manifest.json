@@ -1,0 +1,92 @@
+{
+  "manifest_version": 1,
+  "immutable": true,
+  "run_id": "20260726T182727Z-cbad85e7",
+  "created_at_utc": "2026-07-26T18:27:27.164409+00:00",
+  "status": "PASS",
+  "source": {
+    "commit": "39acb2d08e347503744dbb6cee91572051a55de1",
+    "dirty": false,
+    "dirty_path_count": 0
+  },
+  "provider": {
+    "model": "z-ai/glm-5.2",
+    "base_url": "https://integrate.api.nvidia.com/v1",
+    "temperature": 0.0
+  },
+  "fairness": {
+    "contract_version": "fair_context_ablation_v1",
+    "same_user_prompt_for_blind_and_grounded": true,
+    "user_prompt_sha256": "14acdb8e71382a1c714581dee2be1a64a12271dcabb28c344e109df09422eba3",
+    "system_prompt_template_sha256": "094f8a93f8a6085d02eb9341853036c730af6140c7ced0d8c7bc956aee788b74",
+    "blind_system_prompt_sha256": "668c3e6b28ce2d3d3e5768c447919eb9fbd8e1224365a41780d544996c17daaa",
+    "grounded_system_prompt_sha256": "ea850af86f5b1ab42e3c548290a29adf67e59ce9c77b429164ebace8fb599010",
+    "only_experimental_variable": "DATAHUB_CONTEXT block"
+  },
+  "environment": {
+    "python": "3.12.0",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "dependencies": {
+      "acryl-datahub": "1.6.0.15",
+      "duckdb": "1.4.4",
+      "httpx": "0.28.1",
+      "mcp": "1.28.1",
+      "mcp-server-datahub": "0.6.0",
+      "openai": "2.48.0",
+      "python-dotenv": "1.2.2",
+      "sqlglot": "30.12.0"
+    },
+    "requirements_lock_sha256": "6ee3c2407b2e1e39440cc2dfa1319e419ab555c2bccb593088eb17448db65d48"
+  },
+  "files": {
+    "gate_report.json": {
+      "sha256": "f61dc9c615df8d3cb1cf809dd18dcc9a062ff9efdf5ed9ed660aee7a3ceb8fda",
+      "bytes": 16121
+    },
+    "inputs/blind_system_prompt.txt": {
+      "sha256": "668c3e6b28ce2d3d3e5768c447919eb9fbd8e1224365a41780d544996c17daaa",
+      "bytes": 784
+    },
+    "inputs/context.json": {
+      "sha256": "76511ef8ad08eafa653297ad54e0721c49f642e528739ff264543d4f75693dca",
+      "bytes": 4306
+    },
+    "inputs/governance_policy.json": {
+      "sha256": "7a878ba0f8ca6e175dbd3065027ac6261eadcb360507e8805c316a0867f92214",
+      "bytes": 483
+    },
+    "inputs/grounded_system_prompt.txt": {
+      "sha256": "ea850af86f5b1ab42e3c548290a29adf67e59ce9c77b429164ebace8fb599010",
+      "bytes": 2134
+    },
+    "inputs/result_contract.json": {
+      "sha256": "90c423769b509f1e432adcaf786fc265bb6f8cb68f6ed2e81563a95becfbd59e",
+      "bytes": 986
+    },
+    "inputs/system_prompt_template.txt": {
+      "sha256": "094f8a93f8a6085d02eb9341853036c730af6140c7ced0d8c7bc956aee788b74",
+      "bytes": 692
+    },
+    "inputs/task.txt": {
+      "sha256": "89422ad9570f7e60661797ea589d82c498c2d4e1666fb9828e7e9af144948497",
+      "bytes": 261
+    },
+    "sql/blind.sql": {
+      "sha256": "1b008eb29173db45a2f6c0ac03a09f4ff8332e2769325b5a221b81e79283e189",
+      "bytes": 250
+    },
+    "sql/grounded_initial.sql": {
+      "sha256": "ddd1ca56a7e87451fa661a3816a867058b76f50860ce13b157e77462473ae488",
+      "bytes": 314
+    },
+    "sql/repaired.sql": {
+      "sha256": "1bd3a074f2d6793b23a6bdde3b1bce54fe32aa47294744d6f1b4ba0f9692fbd5",
+      "bytes": 254
+    },
+    "writeback_receipt.json": {
+      "sha256": "da2c99743f08996d367d303d1f4f5f5f8e5977a791ab494e357ba28ffd263972",
+      "bytes": 967
+    }
+  },
+  "manifest_sha256": "ae1e963722bfaa224fc71185998ed085e90de57767922d7079eabc797294ec1b"
+}

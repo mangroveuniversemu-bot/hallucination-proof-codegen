@@ -1,0 +1,11 @@
+{
+  "status": "SUCCESS",
+  "added": true,
+  "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.main.customers,PROD)",
+  "aspect": "institutionalMemory",
+  "element_count": 4,
+  "description": "Agent-generated SQL evidence. Generated from the DataHub schema at 2026-07-26T18:28:13+00:00. Task: Create a five-bucket customer lifetime-value segmentation. Return one row per\ncustomer with output columns customer_key, given_name, family_name,\nlifetime_value, and value_quintile. Treat missing lifetime value as zero. Sort\nby value_quintile and customer_key. Note: Immutable assurance run 20260726T182727Z-cbad85e7: schema, runtime, NULL/result, and governance gates passed after 1 repair attempt(s).",
+  "evidence_url": "https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen/tree/main/runs/20260726T182727Z-cbad85e7",
+  "dataset_description_preserved": true,
+  "message": "Institutional-memory entry was emitted and read back successfully."
+}

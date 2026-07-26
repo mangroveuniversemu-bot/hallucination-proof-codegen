@@ -1,0 +1,4 @@
+Create a five-bucket customer lifetime-value segmentation. Return one row per
+customer with output columns customer_key, given_name, family_name,
+lifetime_value, and value_quintile. Treat missing lifetime value as zero. Sort
+by value_quintile and customer_key.

@@ -1,0 +1,591 @@
+{
+  "orchestrator": "hallucination_proof_demo_v1",
+  "run_id": "20260726T182727Z-cbad85e7",
+  "status": "PASS",
+  "task": "Create a five-bucket customer lifetime-value segmentation. Return one row per\ncustomer with output columns customer_key, given_name, family_name,\nlifetime_value, and value_quintile. Treat missing lifetime value as zero. Sort\nby value_quintile and customer_key.",
+  "fairness": {
+    "same_user_prompt": true,
+    "same_model": true,
+    "same_temperature": true,
+    "only_experimental_variable": "DATAHUB_CONTEXT block"
+  },
+  "blind": {
+    "all_gates_pass": false,
+    "gates": {
+      "schema": {
+        "status": "FAIL",
+        "sql_file": "runs/.pending/20260726T182727Z-cbad85e7/sql/blind.sql",
+        "context_file": "examples/context_bundle.json",
+        "dialect": "duckdb",
+        "table_name": "customers",
+        "source_tables": [
+          "customers"
+        ],
+        "allowed_columns": [
+          "customer_id",
+          "customer_lifetime_value",
+          "first_name",
+          "first_order",
+          "last_name",
+          "most_recent_order",
+          "number_of_orders"
+        ],
+        "referenced_source_columns": [
+          "customer_key",
+          "family_name",
+          "given_name",
+          "lifetime_value"
+        ],
+        "derived_columns": [
+          "lifetime_value"
+        ],
+        "valid_columns": [],
+        "hallucinated_columns": [
+          "customer_key",
+          "family_name",
+          "given_name",
+          "lifetime_value"
+        ],
+        "unexpected_tables": [],
+        "invalid_details": [
+          {
+            "column": "customer_key",
+            "reasons": [
+              "not_in_context_schema"
+            ]
+          },
+          {
+            "column": "family_name",
+            "reasons": [
+              "not_in_context_schema"
+            ]
+          },
+          {
+            "column": "given_name",
+            "reasons": [
+              "not_in_context_schema"
+            ]
+          },
+          {
+            "column": "lifetime_value",
+            "reasons": [
+              "not_in_context_schema"
+            ]
+          }
+        ],
+        "message": "One or more SQL references are not supported by the DataHub context.",
+        "gate": "schema"
+      },
+      "runtime": {
+        "gate": "runtime",
+        "status": "FAIL",
+        "error_type": "BinderException",
+        "message": "Binder Error: Referenced column \"customer_key\" not found in FROM clause!\nCandidate bindings: \"customer_id\", \"customer_lifetime_value\", \"most_recent_order\", \"last_name\", \"number_of_orders\"\n\nLINE 2:     customer_key,\n            ^"
+      },
+      "result_quality": {
+        "gate": "result_quality",
+        "status": "SKIPPED",
+        "contract_id": "customers_clv_quintile_safe_output_v1",
+        "message": "Runtime gate did not pass.",
+        "violations": []
+      },
+      "governance": {
+        "gate": "governance",
+        "status": "SKIPPED",
+        "message": "Schema gate did not pass."
+      }
+    }
+  },
+  "grounded_initial": {
+    "all_gates_pass": false,
+    "gates": {
+      "schema": {
+        "status": "PASS",
+        "sql_file": "runs/.pending/20260726T182727Z-cbad85e7/sql/grounded_initial.sql",
+        "context_file": "examples/context_bundle.json",
+        "dialect": "duckdb",
+        "table_name": "customers",
+        "source_tables": [
+          "customers"
+        ],
+        "allowed_columns": [
+          "customer_id",
+          "customer_lifetime_value",
+          "first_name",
+          "first_order",
+          "last_name",
+          "most_recent_order",
+          "number_of_orders"
+        ],
+        "referenced_source_columns": [
+          "customer_id",
+          "customer_lifetime_value",
+          "first_name",
+          "last_name"
+        ],
+        "derived_columns": [],
+        "valid_columns": [
+          "customer_id",
+          "customer_lifetime_value",
+          "first_name",
+          "last_name"
+        ],
+        "hallucinated_columns": [],
+        "unexpected_tables": [],
+        "invalid_details": [],
+        "message": "All referenced source columns are valid.",
+        "gate": "schema"
+      },
+      "runtime": {
+        "gate": "runtime",
+        "status": "PASS",
+        "columns": [
+          "customer_key",
+          "given_name",
+          "family_name",
+          "lifetime_value",
+          "value_quintile"
+        ],
+        "row_count": 100,
+        "preview": [
+          [
+            14,
+            "Steve",
+            "F.",
+            0.0,
+            1
+          ],
+          [
+            15,
+            "Teresa",
+            "H.",
+            0.0,
+            1
+          ],
+          [
+            17,
+            "Kimberly",
+            "R.",
+            0.0,
+            1
+          ],
+          [
+            23,
+            "Mildred",
+            "A.",
+            0.0,
+            1
+          ],
+          [
+            24,
+            "David",
+            "G.",
+            0.0,
+            1
+          ]
+        ]
+      },
+      "result_quality": {
+        "gate": "result_quality",
+        "status": "PASS",
+        "contract_id": "customers_clv_quintile_safe_output_v1",
+        "row_count": 100,
+        "columns": [
+          "customer_key",
+          "given_name",
+          "family_name",
+          "lifetime_value",
+          "value_quintile"
+        ],
+        "required_columns": [
+          "customer_key",
+          "lifetime_value",
+          "value_quintile"
+        ],
+        "null_quality": {
+          "customer_key": {
+            "status": "PASS",
+            "null_count": 0,
+            "sample_row_numbers": []
+          },
+          "lifetime_value": {
+            "status": "PASS",
+            "null_count": 0,
+            "sample_row_numbers": [],
+            "declared_default": 0,
+            "expected_replacements": 38,
+            "actual_replacements": 38,
+            "default_replacement_status": "PASS"
+          },
+          "value_quintile": {
+            "status": "PASS",
+            "null_count": 0,
+            "sample_row_numbers": []
+          }
+        },
+        "uniqueness": {
+          "customer_key": {
+            "status": "PASS",
+            "duplicate_count": 0
+          }
+        },
+        "numeric_ranges": {
+          "value_quintile": {
+            "status": "PASS",
+            "minimum": 1,
+            "maximum": 5,
+            "invalid_count": 0
+          }
+        },
+        "value_counts": {
+          "value_quintile": {
+            "status": "PASS",
+            "expected": {
+              "1": 20,
+              "2": 20,
+              "3": 20,
+              "4": 20,
+              "5": 20
+            },
+            "actual": {
+              "1": 20,
+              "2": 20,
+              "3": 20,
+              "4": 20,
+              "5": 20
+            }
+          }
+        },
+        "violations": [],
+        "message": "Runtime output satisfies the result and NULL-quality contract."
+      },
+      "governance": {
+        "gate": "governance",
+        "status": "FAIL",
+        "policy_id": "pii_direct_projection_v1",
+        "policy_scope": "final_output",
+        "table_name": "customers",
+        "sensitive_fields": [
+          {
+            "field": "first_name",
+            "matched_classifications": [
+              "PII"
+            ]
+          },
+          {
+            "field": "last_name",
+            "matched_classifications": [
+              "PII"
+            ]
+          }
+        ],
+        "output_lineage": [
+          {
+            "output_column": "customer_key",
+            "source_columns": [
+              "customer_id"
+            ],
+            "unresolved_sources": []
+          },
+          {
+            "output_column": "given_name",
+            "source_columns": [
+              "first_name"
+            ],
+            "unresolved_sources": []
+          },
+          {
+            "output_column": "family_name",
+            "source_columns": [
+              "last_name"
+            ],
+            "unresolved_sources": []
+          },
+          {
+            "output_column": "lifetime_value",
+            "source_columns": [
+              "customer_lifetime_value"
+            ],
+            "unresolved_sources": []
+          },
+          {
+            "output_column": "value_quintile",
+            "source_columns": [
+              "customer_lifetime_value"
+            ],
+            "unresolved_sources": []
+          }
+        ],
+        "violations": [
+          {
+            "output_column": "given_name",
+            "source_column": "first_name",
+            "matched_classifications": [
+              "PII"
+            ],
+            "reason": "sensitive_source_reaches_final_output"
+          },
+          {
+            "output_column": "family_name",
+            "source_column": "last_name",
+            "matched_classifications": [
+              "PII"
+            ],
+            "reason": "sensitive_source_reaches_final_output"
+          }
+        ],
+        "unresolved_outputs": [],
+        "repairable": true,
+        "message": "One or more final outputs violate the governance policy."
+      }
+    }
+  },
+  "structured_failure_report": {
+    "status": "BLOCK",
+    "repair_attempts_allowed": 1,
+    "failures": [
+      {
+        "gate": "governance",
+        "status": "BLOCK",
+        "message": "One or more final outputs violate the governance policy.",
+        "violations": [
+          {
+            "output_column": "given_name",
+            "source_column": "first_name",
+            "matched_classifications": [
+              "PII"
+            ],
+            "reason": "sensitive_source_reaches_final_output",
+            "allowed_actions": [
+              "exclude"
+            ]
+          },
+          {
+            "output_column": "family_name",
+            "source_column": "last_name",
+            "matched_classifications": [
+              "PII"
+            ],
+            "reason": "sensitive_source_reaches_final_output",
+            "allowed_actions": [
+              "exclude"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "repair": {
+    "bounded": true,
+    "max_attempts": 1,
+    "attempts": 1,
+    "status": "PASS"
+  },
+  "final": {
+    "all_gates_pass": true,
+    "gates": {
+      "schema": {
+        "status": "PASS",
+        "sql_file": "runs/.pending/20260726T182727Z-cbad85e7/sql/repaired.sql",
+        "context_file": "examples/context_bundle.json",
+        "dialect": "duckdb",
+        "table_name": "customers",
+        "source_tables": [
+          "customers"
+        ],
+        "allowed_columns": [
+          "customer_id",
+          "customer_lifetime_value",
+          "first_name",
+          "first_order",
+          "last_name",
+          "most_recent_order",
+          "number_of_orders"
+        ],
+        "referenced_source_columns": [
+          "customer_id",
+          "customer_lifetime_value"
+        ],
+        "derived_columns": [],
+        "valid_columns": [
+          "customer_id",
+          "customer_lifetime_value"
+        ],
+        "hallucinated_columns": [],
+        "unexpected_tables": [],
+        "invalid_details": [],
+        "message": "All referenced source columns are valid.",
+        "gate": "schema"
+      },
+      "runtime": {
+        "gate": "runtime",
+        "status": "PASS",
+        "columns": [
+          "customer_key",
+          "lifetime_value",
+          "value_quintile"
+        ],
+        "row_count": 100,
+        "preview": [
+          [
+            14,
+            0.0,
+            1
+          ],
+          [
+            15,
+            0.0,
+            1
+          ],
+          [
+            17,
+            0.0,
+            1
+          ],
+          [
+            23,
+            0.0,
+            1
+          ],
+          [
+            24,
+            0.0,
+            1
+          ]
+        ]
+      },
+      "result_quality": {
+        "gate": "result_quality",
+        "status": "PASS",
+        "contract_id": "customers_clv_quintile_safe_output_v1",
+        "row_count": 100,
+        "columns": [
+          "customer_key",
+          "lifetime_value",
+          "value_quintile"
+        ],
+        "required_columns": [
+          "customer_key",
+          "lifetime_value",
+          "value_quintile"
+        ],
+        "null_quality": {
+          "customer_key": {
+            "status": "PASS",
+            "null_count": 0,
+            "sample_row_numbers": []
+          },
+          "lifetime_value": {
+            "status": "PASS",
+            "null_count": 0,
+            "sample_row_numbers": [],
+            "declared_default": 0,
+            "expected_replacements": 38,
+            "actual_replacements": 38,
+            "default_replacement_status": "PASS"
+          },
+          "value_quintile": {
+            "status": "PASS",
+            "null_count": 0,
+            "sample_row_numbers": []
+          }
+        },
+        "uniqueness": {
+          "customer_key": {
+            "status": "PASS",
+            "duplicate_count": 0
+          }
+        },
+        "numeric_ranges": {
+          "value_quintile": {
+            "status": "PASS",
+            "minimum": 1,
+            "maximum": 5,
+            "invalid_count": 0
+          }
+        },
+        "value_counts": {
+          "value_quintile": {
+            "status": "PASS",
+            "expected": {
+              "1": 20,
+              "2": 20,
+              "3": 20,
+              "4": 20,
+              "5": 20
+            },
+            "actual": {
+              "1": 20,
+              "2": 20,
+              "3": 20,
+              "4": 20,
+              "5": 20
+            }
+          }
+        },
+        "violations": [],
+        "message": "Runtime output satisfies the result and NULL-quality contract."
+      },
+      "governance": {
+        "gate": "governance",
+        "status": "PASS",
+        "policy_id": "pii_direct_projection_v1",
+        "policy_scope": "final_output",
+        "table_name": "customers",
+        "sensitive_fields": [
+          {
+            "field": "first_name",
+            "matched_classifications": [
+              "PII"
+            ]
+          },
+          {
+            "field": "last_name",
+            "matched_classifications": [
+              "PII"
+            ]
+          }
+        ],
+        "output_lineage": [
+          {
+            "output_column": "customer_key",
+            "source_columns": [
+              "customer_id"
+            ],
+            "unresolved_sources": []
+          },
+          {
+            "output_column": "lifetime_value",
+            "source_columns": [
+              "customer_lifetime_value"
+            ],
+            "unresolved_sources": []
+          },
+          {
+            "output_column": "value_quintile",
+            "source_columns": [
+              "customer_lifetime_value"
+            ],
+            "unresolved_sources": []
+          }
+        ],
+        "violations": [],
+        "unresolved_outputs": [],
+        "repairable": false,
+        "message": "All final outputs comply with the governance policy."
+      }
+    }
+  },
+  "final_sql_file": "sql/repaired.sql",
+  "writeback": {
+    "status": "SUCCESS",
+    "added": true,
+    "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.main.customers,PROD)",
+    "aspect": "institutionalMemory",
+    "element_count": 4,
+    "description": "Agent-generated SQL evidence. Generated from the DataHub schema at 2026-07-26T18:28:13+00:00. Task: Create a five-bucket customer lifetime-value segmentation. Return one row per\ncustomer with output columns customer_key, given_name, family_name,\nlifetime_value, and value_quintile. Treat missing lifetime value as zero. Sort\nby value_quintile and customer_key. Note: Immutable assurance run 20260726T182727Z-cbad85e7: schema, runtime, NULL/result, and governance gates passed after 1 repair attempt(s).",
+    "evidence_url": "https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen/tree/main/runs/20260726T182727Z-cbad85e7",
+    "dataset_description_preserved": true,
+    "message": "Institutional-memory entry was emitted and read back successfully."
+  }
+}
