@@ -1,0 +1,3 @@
+Create a five-bucket customer lifetime-value segmentation model. Return one row
+per customer with customer_id, first_name, last_name,
+customer_lifetime_value, and clv_band.

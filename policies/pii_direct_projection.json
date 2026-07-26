@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "policy_id": "pii_direct_projection_v1",
+  "description": "Block DataHub-classified PII from reaching final SQL outputs.",
+  "scope": "final_output",
+  "denied_classifications": [
+    "PII",
+    "urn:li:tag:PII"
+  ],
+  "fail_closed_on_unresolved_lineage": true,
+  "allowed_actions_by_classification": {
+    "PII": [
+      "exclude"
+    ]
+  },
+  "repair": {
+    "strategy": "drop_projection",
+    "replacement_identity": "customer_id",
+    "max_attempts": 1
+  }
+}

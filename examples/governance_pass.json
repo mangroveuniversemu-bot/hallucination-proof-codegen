@@ -1,0 +1,52 @@
+{
+  "gate": "governance",
+  "status": "PASS",
+  "policy_id": "pii_direct_projection_v1",
+  "policy_scope": "final_output",
+  "table_name": "customers",
+  "sensitive_fields": [
+    {
+      "field": "first_name",
+      "matched_classifications": [
+        "PII"
+      ]
+    },
+    {
+      "field": "last_name",
+      "matched_classifications": [
+        "PII"
+      ]
+    }
+  ],
+  "output_lineage": [
+    {
+      "output_column": "customer_id",
+      "source_columns": [
+        "customer_id"
+      ],
+      "unresolved_sources": []
+    },
+    {
+      "output_column": "customer_lifetime_value",
+      "source_columns": [
+        "customer_lifetime_value"
+      ],
+      "unresolved_sources": []
+    },
+    {
+      "output_column": "clv_band",
+      "source_columns": [
+        "customer_lifetime_value"
+      ],
+      "unresolved_sources": []
+    }
+  ],
+  "violations": [],
+  "unresolved_outputs": [],
+  "repairable": false,
+  "message": "All final outputs comply with the governance policy.",
+  "sql_file": "examples/output_pii_repaired.sql",
+  "context_file": "examples/context_bundle.json",
+  "policy_file": "policies/pii_direct_projection.json",
+  "dialect": "duckdb"
+}

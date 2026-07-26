@@ -1,0 +1,152 @@
+{
+  "benchmark_id": "small_vmr_benchmark_v1",
+  "run_id": "20260727T120000Z",
+  "claim_scope": "Small directional benchmark; no zero-hallucination claim.",
+  "metric": "Verified Merge Readiness = generations passing schema, runtime, governance, and result gates / all generations",
+  "modes": {
+    "blind": {
+      "verified_merge_ready": 1,
+      "total": 9,
+      "rate": 0.1111111111111111,
+      "gates": {
+        "schema": {
+          "passed": 1,
+          "total": 9,
+          "rate": 0.1111111111111111
+        },
+        "runtime": {
+          "passed": 1,
+          "total": 9,
+          "rate": 0.1111111111111111
+        },
+        "governance": {
+          "passed": 1,
+          "total": 9,
+          "rate": 0.1111111111111111
+        },
+        "result": {
+          "passed": 1,
+          "total": 9,
+          "rate": 0.1111111111111111
+        }
+      },
+      "by_world": {
+        "familiar": {
+          "passed": 1,
+          "total": 3,
+          "rate": 0.3333333333333333
+        },
+        "governed": {
+          "passed": 0,
+          "total": 3,
+          "rate": 0.0
+        },
+        "legacy": {
+          "passed": 0,
+          "total": 3,
+          "rate": 0.0
+        }
+      },
+      "repairs": {
+        "attempted": 0,
+        "passed": 0
+      }
+    },
+    "datahub_context": {
+      "verified_merge_ready": 7,
+      "total": 9,
+      "rate": 0.7777777777777778,
+      "gates": {
+        "schema": {
+          "passed": 9,
+          "total": 9,
+          "rate": 1.0
+        },
+        "runtime": {
+          "passed": 9,
+          "total": 9,
+          "rate": 1.0
+        },
+        "governance": {
+          "passed": 7,
+          "total": 9,
+          "rate": 0.7777777777777778
+        },
+        "result": {
+          "passed": 7,
+          "total": 9,
+          "rate": 0.7777777777777778
+        }
+      },
+      "by_world": {
+        "familiar": {
+          "passed": 3,
+          "total": 3,
+          "rate": 1.0
+        },
+        "governed": {
+          "passed": 1,
+          "total": 3,
+          "rate": 0.3333333333333333
+        },
+        "legacy": {
+          "passed": 3,
+          "total": 3,
+          "rate": 1.0
+        }
+      },
+      "repairs": {
+        "attempted": 0,
+        "passed": 0
+      }
+    },
+    "context_assurance": {
+      "verified_merge_ready": 9,
+      "total": 9,
+      "rate": 1.0,
+      "gates": {
+        "schema": {
+          "passed": 9,
+          "total": 9,
+          "rate": 1.0
+        },
+        "runtime": {
+          "passed": 9,
+          "total": 9,
+          "rate": 1.0
+        },
+        "governance": {
+          "passed": 9,
+          "total": 9,
+          "rate": 1.0
+        },
+        "result": {
+          "passed": 9,
+          "total": 9,
+          "rate": 1.0
+        }
+      },
+      "by_world": {
+        "familiar": {
+          "passed": 3,
+          "total": 3,
+          "rate": 1.0
+        },
+        "governed": {
+          "passed": 3,
+          "total": 3,
+          "rate": 1.0
+        },
+        "legacy": {
+          "passed": 3,
+          "total": 3,
+          "rate": 1.0
+        }
+      },
+      "repairs": {
+        "attempted": 2,
+        "passed": 2
+      }
+    }
+  }
+}

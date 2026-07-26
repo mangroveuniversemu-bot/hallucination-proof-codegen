@@ -1,0 +1,13 @@
+{
+  "initial_provider_calls": 18,
+  "repair_provider_calls": 3,
+  "repair_outputs_used_for_scoring": 2,
+  "discarded_repair_outputs": [
+    {
+      "task_id": "legacy_top_shoppers",
+      "reason": "Generated in response to a validator false positive before the CTE SELECT-star regression fix; the paired original Context SQL passes after the deterministic gate fix.",
+      "file": "benchmarks/results/20260727T120000Z/sql/legacy_top_shoppers__discarded_gate_bug_repair.sql"
+    }
+  ],
+  "resampling_after_gate_fix": false
+}

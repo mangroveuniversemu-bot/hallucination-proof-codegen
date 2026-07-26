@@ -1,100 +1,251 @@
 # Hallucination-Proof SQL Codegen
 
-Bare LLMs can generate plausible-looking data code that references columns which
-do not exist. This project grounds `z-ai/glm-5.2` with real DataHub schema and
-lineage retrieved through the DataHub MCP Server, validates every physical
-column reference with SQLGlot, and writes generation provenance back to
-DataHub. The result is dbt SQL that can run correctly on the first attempt
-instead of failing later in the warehouse.
+**SQL that runs is not necessarily SQL that should be merged.**
 
-## The proof: same model, same task, one controlled difference
+This project turns DataHub metadata into a change-admission control plane for
+agent-generated dbt SQL. `z-ai/glm-5.2` receives real schema and lineage, while
+deterministic gates enforce source columns, field-level PII policy, and
+downstream criticality. A failed candidate may receive exactly one structured
+GLM repair attempt; the result is then passed, routed to review, or blocked.
 
-Both runs used the same model and this exact task:
+This is more than a metadata-aware code generator:
 
-> 幫我算出顧客終身價值的分布狀況，把顧客分成 5 個等量的區間，列出每個區間的人數、最低、平均、最高值
+- DataHub MCP supplies authoritative schema, upstream/downstream lineage,
+  field tags, asset criticality, and exact lineage paths.
+- SQLGlot traces final outputs through CTEs, aliases, expressions, stars, and
+  window functions to physical source columns.
+- PII policy blocks executable-but-unsafe SQL.
+- Downstream criticality converts lineage into `AUTO_PR`, `REVIEW_REQUIRED`,
+  or `BLOCK_AUTO_MERGE`.
+- Repair is bounded to one attempt. Provider failure or a second gate failure
+fails closed instead of starting an agent loop.
 
-The only difference was whether GLM received the DataHub context bundle.
+The repository name describes the design goal, not a claim that hallucinations
+have been eliminated. Evidence is reported as gate outcomes on named tasks.
 
-| Mode | Context supplied to GLM | Generated source field | Validator | DuckDB runtime |
+## Three controlled proofs
+
+### 1. Schema grounding prevents hallucinated columns
+
+Both runs use the same model and task. The only difference is whether GLM
+receives the DataHub context bundle.
+
+| Mode | Context supplied | Generated field | Schema gate | DuckDB runtime |
 | --- | --- | --- | --- | --- |
-| Blind | Table name `customers` only | `clv` | **FAIL** — `clv` is not in the schema | **Binder Error:** `Referenced column "clv" not found in FROM clause!` |
-| Grounded | 7 real fields plus upstream lineage | `customer_lifetime_value` | **PASS** | **Success:** 100 customers returned in 5 buckets of 20 |
+| Blind | Table name `customers` only | `clv` | **FAIL** | **Binder Error** |
+| Grounded | 7 real fields plus lineage | `customer_lifetime_value` | **PASS** | **PASS:** 5 buckets of 20 |
 
-DuckDB also suggested the correct binding in the blind failure:
+DuckDB suggested the real field in the blind failure:
 `Candidate bindings: "customer_lifetime_value"`.
 
-This is runtime evidence, not an AI-written claim:
+Evidence:
 
-- [Blind SQL](examples/output_blind.sql) and
-  [DuckDB error](examples/blind_runtime_error.txt)
-- [Grounded SQL](examples/output_grounded.sql) and
-  [DuckDB output](examples/grounded_runtime_output.txt)
 - [Shared task](examples/task.txt)
+- [Blind SQL](examples/output_blind.sql) and
+  [runtime error](examples/blind_runtime_error.txt)
+- [Grounded SQL](examples/output_grounded.sql) and
+  [runtime output](examples/grounded_runtime_output.txt)
 
-## How the pipeline works
+### 2. The PII Governance Gate blocks executable-but-unsafe SQL
+
+DataHub classifies `first_name` and `last_name` with field-level `PII` tags.
+The candidate asks for CLV segmentation and customer names.
+
+| Gate | Candidate | After repair |
+| --- | --- | --- |
+| Schema | **PASS**: every field exists | **PASS** |
+| DuckDB runtime | **PASS**: query returns names | **PASS**: segmentation remains |
+| Governance | **FAIL**: PII reaches final output | **PASS**: PII projections removed |
+
+The failure is a policy decision, not a disguised SQL error.
+
+Evidence:
+
+- [Unsafe candidate SQL](examples/output_pii_candidate.sql)
+- [Governance failure](examples/governance_fail.json)
+- [Deterministic AST repair](examples/governance_repair.json)
+- [Repaired SQL](examples/output_pii_repaired.sql)
+- [Final governance pass](examples/governance_pass.json)
+- [Candidate runtime](examples/pii_candidate_runtime_output.txt) and
+  [repaired runtime](examples/pii_repaired_runtime_output.txt)
+
+### 3. Downstream lineage controls admission
+
+The local demo bootstrap creates three explicitly demo-managed downstream
+datasets in DataHub, connects them to `customers`, and applies criticality tags.
+The gate does not hardcode their names: it reads them back through MCP and
+verifies an exact lineage path for every consumer.
+
+| DataHub downstream consumer | Criticality | Required action |
+| --- | --- | --- |
+| `customer_value_dashboard` | LOW | `AUTO_PR` |
+| `monthly_revenue_report` | MEDIUM | `REVIEW_REQUIRED` |
+| `churn_feature_table` | HIGH | `BLOCK_AUTO_MERGE` |
+
+The highest reachable criticality wins, so the checked-in result blocks
+automatic merge. The dbt-to-DuckDB physical sibling is retained as lineage
+evidence but excluded from the business-impact decision.
+
+Evidence:
+
+- [DataHub-derived context](examples/context_bundle.json)
+- [Impact policy](policies/impact_policy.json)
+- [Impact report](examples/impact_report.json)
+- [Full admission report](examples/admission_report.json)
+- [One-attempt GLM repair](examples/output_agent_repaired.sql) and
+  [DuckDB runtime](examples/agent_repair_runtime_output.txt)
+
+![DataHub Impact Analysis showing the HIGH consumer](examples/impact_high_ui_evidence.png)
+
+![DataHub Impact Analysis showing the LOW and MEDIUM consumers](examples/impact_low_medium_ui_evidence.png)
+
+## Small Verified Merge Readiness benchmark
+
+The checked-in benchmark tests three controlled schema worlds with three tasks
+each. Every mode sees the same task and fixed DuckDB rows.
+
+| World | What it isolates |
+| --- | --- |
+| Familiar | Conventional names such as `orders.total_amount` |
+| Legacy | Non-obvious names such as `fct_cart_checkouts.gross_revenue_usd` |
+| Governed | Legacy-style names plus field-level `PII` / `RESTRICTED` metadata |
+
+There are only two initial model calls per task: Blind and DataHub Context.
+Context + Assurance reuses the exact Context candidate and may make one repair
+call only after a gate failure. It never gets a fresh initial sample.
+
+**Verified Merge Readiness (VMR)** is the share of all nine task generations
+that pass schema, DuckDB runtime, governance, and reference-result gates.
+
+| Mode | Ready | VMR | Schema | Runtime | Governance | Result | Repairs |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Blind | 1/9 | 11.1% | 11.1% | 11.1% | 11.1% | 11.1% | 0 |
+| DataHub Context | 7/9 | 77.8% | 100% | 100% | 77.8% | 77.8% | 0 |
+| Context + Assurance | 9/9 | 100% | 100% | 100% | 100% | 100% | 2/2 passed |
+
+These are small-sample, directional results from one recorded run of
+`z-ai/glm-5.2`; **they are not evidence that hallucinations were reduced to
+zero**. The full report retains every SQL file and failed gate in the
+denominator. Result validation executes a reference query over the same fixed
+data and compares ordered column names, row counts, and values.
+
+The first scoring pass also exposed two defects in the gates themselves: CTE
+`SELECT *` output forwarding and `COUNT(*)` lineage. Both were fixed with
+regression tests, then the exact existing SQL was rescored with no new model
+calls. Before those defects were identified, the run made one unnecessary
+Legacy repair call; that output is retained as a discarded debugging artifact
+and is not used in the final score. The run metadata therefore records 18
+initial calls, 3 repair calls, and 2 repair outputs used for scoring.
+
+Evidence:
+
+- [Human-readable benchmark result](examples/benchmark_results.md)
+- [Machine-readable summary](examples/benchmark_summary.json)
+- [Full per-generation report](benchmarks/results/20260727T120000Z/report.json)
+- [World/task definition](benchmarks/worlds.json) and
+  [DataHub-shaped context fixtures](benchmarks/contexts/)
+
+## Architecture
 
 ```mermaid
 flowchart LR
     A["DataHub metadata"] --> B["DataHub MCP Server"]
-    B --> C["Context builder<br/>schema + lineage"]
-    C --> D["GLM codegen<br/>grounded or blind"]
-    D --> E["SQLGlot validator"]
-    E -->|PASS| F["DuckDB / dbt runtime"]
-    F --> G["DataHub write-back<br/>institutionalMemory"]
+    B --> C["Context builder<br/>schema + tags + upstream/downstream + exact paths"]
+    C --> D["GLM SQL generation"]
+    D --> E["Schema Gate"]
+    E --> F["Governance Gate"]
+    E -->|"FAIL"| G["Structured failure JSON"]
+    F -->|"FAIL"| G
+    G --> H["GLM repair<br/>maximum one attempt"]
+    H --> E
+    F -->|"PASS"| I["Downstream Impact Gate"]
+    I -->|"LOW"| J["AUTO_PR"]
+    I -->|"MEDIUM"| K["REVIEW_REQUIRED"]
+    I -->|"HIGH"| L["BLOCK_AUTO_MERGE"]
+    J --> M["DuckDB runtime + DataHub write-back"]
+    K --> M
+    L --> N["Decision write-back / audit"]
 ```
 
-1. `context_builder.py` calls MCP `search`, follows schema pagination until
-   `remainingCount` reaches zero, then retrieves one-hop upstream lineage.
-2. `codegen.py` injects that context into the grounded system prompt. Its
-   `--blind` mode uses the same model and task but provides only the table name.
-3. `validator.py` parses dbt SQL with SQLGlot and compares physical source
-   columns with DataHub's authoritative `fieldPath` values.
-4. `writeback.py` appends the validated generation evidence to the dataset's
-   `institutionalMemory`, reads it back from GMS, and verifies that the original
-   ingestion-owned description was preserved.
+There is no unlimited repair cycle. A repaired candidate is evaluated once;
+if it still fails, or if the provider errors, admission is blocked.
 
-The checked-in `customers` context contains all 7 schema fields and shows that
-the model is derived from three upstream tables: `stg_customers`, `stg_orders`,
-and `stg_payments`. That lineage is information a model cannot reliably infer
-from the table name alone.
+## How each stage works
 
-## Automated validator evidence
+1. `context_builder.py` searches for an exact dbt dataset name, paginates all
+   schema fields, reads immediate upstream lineage, explores downstreams to
+   three hops, and calls `get_lineage_paths_between` for each result.
+2. `codegen.py` exposes field descriptions and governance labels to the
+   grounded prompt. `--blind` supplies only the table name.
+3. `validator.py` checks physical references against DataHub `fieldPath`
+   values while excluding valid derived aliases.
+4. `governance_gate.py` traces final output lineage and applies the versioned
+   PII policy. Its standalone `--repair` mode is a deterministic AST rewrite.
+5. `impact_gate.py` maps real downstream criticality to an admission action.
+   Unknown criticality defaults to reviewer; unverified paths cannot auto-PR.
+6. `admission_controller.py` converts a schema/governance failure to JSON,
+   sends that JSON and the original SQL to GLM once, re-runs both gates, then
+   applies downstream impact admission.
+7. `writeback.py` appends evidence to DataHub `institutionalMemory`, reads it
+   back, and confirms the ingestion-owned description is unchanged.
+8. `benchmark.py` runs the paired three-world experiment, executes all four
+   gates, preserves raw SQL, and computes VMR without dropping failures.
 
-The validator distinguishes physical columns from valid CTE and SELECT aliases,
-including references nested inside window functions.
+The checked-in `customers` context contains all 7 fields, three upstream
+tables (`stg_customers`, `stg_orders`, `stg_payments`), verified PII tags, and
+the downstream admission graph.
 
-| Test | Expected and observed result | Hallucinated columns | Exit code |
-| --- | --- | --- | --- |
-| Grounded SQL | **PASS** | None | `0` |
-| Blind SQL | **FAIL** | `clv` | `1` |
-| Window-only edge case: `NTILE(5) OVER (ORDER BY clv) AS clv_band` | **FAIL** | `clv`; derived alias `clv_band` is not misclassified | `1` |
+## Structured bounded repair
 
-Run the three checked-in cases:
+The controller sends a machine-readable report rather than relying on a human
+to copy terminal output:
+
+```json
+{
+  "gate": "governance",
+  "status": "BLOCK",
+  "violations": [
+    {
+      "field": "customers.last_name",
+      "classification": ["PII"],
+      "allowed_actions": ["exclude"]
+    }
+  ],
+  "repair_attempts_allowed": 1
+}
+```
+
+The current policy permits `exclude`. It intentionally does not claim that an
+unsalted hash of a name is safe. A production-approved tokenization or salted
+hash UDF can be added as an allowed action when policy metadata defines it.
+
+## Automated test evidence
+
+The suite covers governance lineage, CTEs, aliases, stars, `COUNT(*)`, window functions,
+exact dataset selection, representation-copy filtering, LOW/MEDIUM/HIGH
+routing, unknown criticality, unverified paths, one-call repair, failed repair,
+provider timeout behavior, reference-answer preflight, and ordered result
+equivalence.
 
 ```powershell
-python src/validator.py examples/output_grounded.sql
-python src/validator.py examples/output_blind.sql
-python src/validator.py examples/validator_window_edge.sql
+python -m unittest discover -s tests -v
 ```
 
-Each command prints structured JSON. Exit code `0` means all physical source
-columns are valid, `1` means unsupported columns or tables were detected, and
-`2` means parsing or configuration failed. The non-zero validation result is
-ready for CI or another automated agent gate.
+CLI exit codes are automation-ready:
 
-## Closed-loop write-back
+| Result | Exit code |
+| --- | --- |
+| Pass / `AUTO_PR` | `0` |
+| Policy block / `BLOCK_AUTO_MERGE` | `1` |
+| Configuration or execution error | `2` |
+| `REVIEW_REQUIRED` | `3` |
 
-After validation and DuckDB execution passed, `writeback.py` wrote a provenance
-record to the real dbt `customers` dataset through `DatahubRestEmitter`. API
-read-back confirmed that the `institutionalMemory` element exists and that the
-original dbt description did not change. The same record was then verified
-visually in DataHub under **Documentation → Resources**:
+## Closed-loop DataHub evidence
 
-![DataHub customers Documentation showing the agent-generated SQL evidence](examples/writeback_ui_evidence.png)
+The UI confirms both field-level PII tags and agent evidence links while the
+original dbt description remains intact.
 
-The resource links directly to
-[`examples/output_grounded.sql`](examples/output_grounded.sql), so reviewers can
-move from the metadata record to the exact generated artifact.
+![DataHub customers showing PII field tags and write-back evidence](examples/writeback_ui_evidence.png)
 
 ## Repository layout
 
@@ -104,17 +255,34 @@ hallucination-proof-codegen/
 |   |-- context_builder.py
 |   |-- codegen.py
 |   |-- validator.py
+|   |-- governance_gate.py
+|   |-- impact_gate.py
+|   |-- admission_controller.py
+|   |-- bootstrap_governance.py
+|   |-- bootstrap_impact_demo.py
+|   |-- benchmark.py
 |   `-- writeback.py
+|-- benchmarks/
+|   |-- contexts/
+|   |-- results/20260727T120000Z/
+|   `-- worlds.json
+|-- policies/
+|   |-- pii_direct_projection.json
+|   `-- impact_policy.json
+|-- tests/
+|   |-- test_governance_gate.py
+|   |-- test_context_builder.py
+|   |-- test_impact_gate.py
+|   |-- test_admission_controller.py
+|   |-- test_validator.py
+|   `-- test_benchmark.py
 |-- examples/
 |   |-- context_bundle.json
-|   |-- task.txt
-|   |-- output_blind.sql
-|   |-- blind_runtime_error.txt
-|   |-- output_grounded.sql
-|   |-- grounded_runtime_output.txt
-|   |-- validator_window_edge.sql
-|   |-- writeback_ui_evidence.png
-|   `-- README.md
+|   |-- output_pii_candidate.sql
+|   |-- output_agent_repaired.sql
+|   |-- impact_report.json
+|   |-- admission_report.json
+|   `-- *_ui_evidence.png
 |-- .env.example
 |-- .gitignore
 |-- LICENSE
@@ -125,7 +293,7 @@ The dbt Labs test project is intentionally not vendored into this repository.
 
 ## Quick start
 
-### 1. Install this project
+### 1. Install
 
 ```powershell
 git clone https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen.git
@@ -136,35 +304,19 @@ python -m pip install -r requirements.txt
 Copy-Item .env.example .env
 ```
 
-Set the NVIDIA API key in `.env`. The local DataHub URLs are already represented
-in `.env.example`; `DATAHUB_GMS_TOKEN` can remain empty for an unsecured local
-Quickstart instance.
+Set `NVIDIA_API_KEY` in `.env`. Never commit `.env`.
 
-```dotenv
-NVIDIA_API_KEY=your_key_here
-DATAHUB_GMS_URL=http://localhost:8080
-DATAHUB_UI_URL=http://localhost:9002
-DATAHUB_GMS_TOKEN=
-```
-
-Never commit `.env`; it is ignored by Git.
-
-### 2. Prepare the external dbt test dataset
-
-Clone the dbt Labs project next to this repository:
+### 2. Prepare the external dbt dataset
 
 ```powershell
 git clone https://github.com/dbt-labs/jaffle_shop_duckdb.git ..\jaffle_shop_duckdb
-cd ..\jaffle_shop_duckdb
+Push-Location ..\jaffle_shop_duckdb
 dbt build
 dbt docs generate
-cd ..\hallucination-proof-codegen
+Pop-Location
 ```
 
-Ingest the generated DuckDB and dbt metadata into DataHub, and ensure the
-`mcp-server-datahub` command can connect to that instance. The captured
-`examples/context_bundle.json` is included as evidence, but rebuilding context
-requires a running DataHub instance.
+Ingest the DuckDB and dbt artifacts into a local DataHub instance.
 
 ### 3. Build authoritative context
 
@@ -172,48 +324,79 @@ requires a running DataHub instance.
 python src/context_builder.py customers
 ```
 
-The command writes `examples/context_bundle.json` with the complete paginated
-field list and immediate upstream tables.
-
-### 4. Generate the controlled Before/After pair
+### 4. Apply and verify PII metadata
 
 ```powershell
-$task = Get-Content -Raw .\examples\task.txt
-python src/codegen.py $task
-python src/codegen.py --blind $task
+python src/bootstrap_governance.py
 ```
 
-Outputs are written to `examples/output_grounded.sql` and
-`examples/output_blind.sql`.
-
-### 5. Validate both outputs
+### 5. Create the transparent demo impact graph
 
 ```powershell
-python src/validator.py examples/output_grounded.sql
-python src/validator.py examples/output_blind.sql
+python src/bootstrap_impact_demo.py
 ```
 
-### 6. Execute both outputs against DuckDB
+This command is idempotent. It creates only the three assets documented above,
+marks each with `demo_managed_by=hallucination-proof-codegen`, and updates the
+context only after MCP reads back tags and exact paths.
+
+### 6. Run the standalone impact gate
 
 ```powershell
-$sql = Get-Content -Raw .\examples\output_blind.sql
-dbt --project-dir ..\jaffle_shop_duckdb --profiles-dir ..\jaffle_shop_duckdb show --inline $sql --limit 10
-
-$sql = Get-Content -Raw .\examples\output_grounded.sql
-dbt --project-dir ..\jaffle_shop_duckdb --profiles-dir ..\jaffle_shop_duckdb show --inline $sql --limit 10
+python src/impact_gate.py --report-output examples/impact_report.json
 ```
 
-### 7. Write validated provenance back to DataHub
+The checked-in demo exits `1` because one reachable asset is HIGH.
+
+### 7. Run the bounded admission controller
+
+```powershell
+python src/admission_controller.py examples/output_pii_candidate.sql `
+  --task "Create a five-bucket customer lifetime-value segmentation model and include customer names." `
+  --repair-output examples/output_agent_repaired.sql `
+  --report-output examples/admission_report.json
+```
+
+The controller performs at most one GLM call. In the checked-in result the
+repair passes schema and governance, then downstream impact blocks auto-merge.
+
+### 8. Verify repaired SQL against DuckDB
+
+The sample profile uses a relative DuckDB path, so run from the dbt project:
+
+```powershell
+Push-Location ..\jaffle_shop_duckdb
+$sql = Get-Content -Raw `
+  ..\hallucination-proof-codegen\examples\output_agent_repaired.sql
+dbt show --project-dir . --profiles-dir . --inline $sql --limit 5
+Pop-Location
+```
+
+### 9. Write a decision record back to DataHub
 
 ```powershell
 python src/writeback.py `
-  "Grounded SQL generated from DataHub schema; SQLGlot validation and DuckDB execution both passed." `
-  --task "Calculate the customer lifetime-value distribution in five equal-sized buckets and report count, minimum, average, and maximum."
+  "One GLM repair passed schema and governance; HIGH downstream criticality blocked automatic merge." `
+  --task "Create a five-bucket CLV model and include customer names." `
+  --evidence-url "https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen/blob/main/examples/admission_report.json"
 ```
 
-The command reads the dataset URN from `examples/context_bundle.json`, appends
-the evidence without replacing existing documentation, verifies the write via
-GMS, and prints the direct DataHub UI URL.
+### 10. Reproduce the small benchmark
+
+This makes 18 initial model calls and only the repair calls required by failed
+Context candidates. It creates a timestamped directory under
+`benchmarks/results/`.
+
+```powershell
+python src/benchmark.py --workers 3
+```
+
+To re-evaluate an existing run after changing deterministic gates, without any
+new model call:
+
+```powershell
+python src/benchmark.py --rescore-run 20260727T120000Z
+```
 
 ## License
 

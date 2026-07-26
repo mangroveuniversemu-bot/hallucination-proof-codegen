@@ -1,0 +1,13 @@
+{
+  "table_name": "orders",
+  "urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,benchmark.familiar.orders,PROD)",
+  "fields": [
+    {"fieldPath": "order_id", "nativeDataType": "INTEGER", "nullable": false, "description": "Unique order identifier."},
+    {"fieldPath": "customer_id", "nativeDataType": "INTEGER", "nullable": false, "description": "Customer identifier."},
+    {"fieldPath": "order_date", "nativeDataType": "DATE", "nullable": false, "description": "Date when the order was placed."},
+    {"fieldPath": "total_amount", "nativeDataType": "DECIMAL(12,2)", "nullable": false, "description": "Gross order amount in USD."},
+    {"fieldPath": "status", "nativeDataType": "VARCHAR", "nullable": false, "description": "Current order status."}
+  ],
+  "upstream_tables": [],
+  "downstream_assets": []
+}

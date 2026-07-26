@@ -1,0 +1,84 @@
+{
+  "gate": "downstream_impact",
+  "status": "BLOCK",
+  "policy_id": "downstream_criticality_v1",
+  "source_urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.main.customers,PROD)",
+  "lineage_max_hops": 3,
+  "may_affect": [
+    "churn_feature_table",
+    "customer_value_dashboard",
+    "monthly_revenue_report"
+  ],
+  "affected_assets": [
+    {
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.analytics.churn_feature_table,PROD)",
+      "name": "churn_feature_table",
+      "type": "DATASET",
+      "degree": 1,
+      "criticality": "HIGH",
+      "criticality_source": "datahub",
+      "lineage_path_verified": true,
+      "lineage_path": [
+        {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.main.customers,PROD)",
+          "type": "DATASET"
+        },
+        {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.analytics.churn_feature_table,PROD)",
+          "type": "DATASET"
+        }
+      ],
+      "required_action": "BLOCK_AUTO_MERGE"
+    },
+    {
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.analytics.customer_value_dashboard,PROD)",
+      "name": "customer_value_dashboard",
+      "type": "DATASET",
+      "degree": 1,
+      "criticality": "LOW",
+      "criticality_source": "datahub",
+      "lineage_path_verified": true,
+      "lineage_path": [
+        {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.main.customers,PROD)",
+          "type": "DATASET"
+        },
+        {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.analytics.customer_value_dashboard,PROD)",
+          "type": "DATASET"
+        }
+      ],
+      "required_action": "AUTO_PR"
+    },
+    {
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.analytics.monthly_revenue_report,PROD)",
+      "name": "monthly_revenue_report",
+      "type": "DATASET",
+      "degree": 1,
+      "criticality": "MEDIUM",
+      "criticality_source": "datahub",
+      "lineage_path_verified": true,
+      "lineage_path": [
+        {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.main.customers,PROD)",
+          "type": "DATASET"
+        },
+        {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.analytics.monthly_revenue_report,PROD)",
+          "type": "DATASET"
+        }
+      ],
+      "required_action": "REVIEW_REQUIRED"
+    }
+  ],
+  "ignored_assets": [
+    {
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,jaffle_shop.main.customers,PROD)",
+      "name": "jaffle_shop.main.customers",
+      "reason": "representation_copy"
+    }
+  ],
+  "highest_criticality": "HIGH",
+  "admission_action": "BLOCK_AUTO_MERGE",
+  "message": "A HIGH-criticality downstream consumer blocks automatic merge."
+}

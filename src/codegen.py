@@ -53,11 +53,38 @@ def format_fields(fields: list[dict[str, Any]]) -> str:
         elif nullable is False:
             nullable_text = "no"
 
+        governance_labels: list[str] = []
+        for metadata_key in (
+            "tags",
+            "globalTags",
+            "editedTags",
+            "glossaryTerms",
+            "editedGlossaryTerms",
+        ):
+            metadata = field.get(metadata_key)
+            if isinstance(metadata, str):
+                governance_labels.append(metadata)
+            elif isinstance(metadata, list):
+                governance_labels.extend(
+                    item for item in metadata if isinstance(item, str)
+                )
+            elif isinstance(metadata, dict):
+                nested = metadata.get("tags") or metadata.get("terms") or []
+                for item in nested:
+                    if isinstance(item, str):
+                        governance_labels.append(item)
+                    elif isinstance(item, dict):
+                        label = item.get("tag") or item.get("term") or item.get("name")
+                        if isinstance(label, str):
+                            governance_labels.append(label)
+
+        governance_text = ", ".join(dict.fromkeys(governance_labels)) or "none"
+
         if not isinstance(field_path, str) or not field_path:
             raise RuntimeError("Every field must have a non-empty fieldPath")
         lines.append(
             f"- `{field_path}` | type: {native_type} | nullable: {nullable_text} "
-            f"| description: {description}"
+            f"| governance: {governance_text} | description: {description}"
         )
     return "\n".join(lines)
 

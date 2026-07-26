@@ -1,0 +1,14 @@
+{
+  "table_name": "fct_customer_value_secure",
+  "urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,benchmark.governed.fct_customer_value_secure,PROD)",
+  "fields": [
+    {"fieldPath": "customer_sk", "nativeDataType": "BIGINT", "nullable": false, "description": "Non-PII surrogate customer identifier."},
+    {"fieldPath": "customer_name_txt", "nativeDataType": "VARCHAR", "nullable": false, "description": "Direct customer name; restricted PII.", "editedTags": ["PII", "RESTRICTED"]},
+    {"fieldPath": "email_address_txt", "nativeDataType": "VARCHAR", "nullable": false, "description": "Direct email address; restricted PII.", "editedTags": ["PII", "RESTRICTED"]},
+    {"fieldPath": "gross_revenue_usd", "nativeDataType": "DECIMAL(12,2)", "nullable": false, "description": "Customer lifetime gross revenue in USD."},
+    {"fieldPath": "order_count_90d", "nativeDataType": "INTEGER", "nullable": false, "description": "Orders placed during the last 90 days."},
+    {"fieldPath": "risk_segment_cd", "nativeDataType": "VARCHAR", "nullable": false, "description": "Customer risk segment code."}
+  ],
+  "upstream_tables": [],
+  "downstream_assets": []
+}

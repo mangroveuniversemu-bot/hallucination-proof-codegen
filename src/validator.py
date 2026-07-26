@@ -63,13 +63,43 @@ def render_dbt_relations(sql: str) -> str:
     return rendered
 
 
-def scope_output_names(scope: Scope) -> set[str]:
+def scope_output_names(
+    scope: Scope,
+    visited: set[int] | None = None,
+) -> set[str]:
+    """Resolve explicit outputs plus columns forwarded by derived-source stars."""
+    visited = set() if visited is None else visited
+    scope_id = id(scope)
+    if scope_id in visited:
+        return set()
+    visited.add(scope_id)
+
     named_selects = getattr(scope.expression, "named_selects", [])
-    return {
+    outputs = {
         name.casefold()
         for name in named_selects
         if isinstance(name, str) and name and name != "*"
     }
+    selects = getattr(scope.expression, "selects", [])
+    star_selects = [item for item in selects if item.is_star]
+    if not star_selects:
+        return outputs
+
+    try:
+        sources = {
+            alias.casefold(): source
+            for alias, (_node, source) in scope.selected_sources.items()
+        }
+    except Exception as exc:
+        raise ValidationError(f"Unable to expand derived SELECT *: {exc}") from exc
+
+    for star in star_selects:
+        qualifier = star.table.casefold() if getattr(star, "table", "") else ""
+        candidates = [sources.get(qualifier)] if qualifier else list(sources.values())
+        for source in candidates:
+            if isinstance(source, Scope):
+                outputs.update(scope_output_names(source, visited))
+    return outputs
 
 
 def local_select_aliases(scope: Scope) -> set[str]:

@@ -1,0 +1,14 @@
+Command context: run from the external jaffle_shop_duckdb project directory
+Command: dbt show --project-dir . --profiles-dir . --inline <repaired SQL> --limit 5
+Exit code: 0
+
+Previewing inline node:
+| customer_id | customer_lifetime_value | clv_band |
+| ----------- | ----------------------- | -------- |
+|           6 |                       8 |        1 |
+|          11 |                       3 |        1 |
+|          12 |                       4 |        1 |
+|          16 |                      12 |        1 |
+|          19 |                       3 |        1 |
+
+Result: RUNTIME PASS. Segmentation is preserved and PII is absent.

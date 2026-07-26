@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "policy_id": "downstream_criticality_v1",
+  "description": "Route generated model changes by the highest criticality of real DataHub downstream consumers.",
+  "ignore_representation_copies": true,
+  "require_verified_paths": true,
+  "default_criticality": "MEDIUM",
+  "no_downstream_action": "AUTO_PR",
+  "actions": {
+    "LOW": "AUTO_PR",
+    "MEDIUM": "REVIEW_REQUIRED",
+    "HIGH": "BLOCK_AUTO_MERGE"
+  }
+}

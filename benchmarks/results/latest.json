@@ -1,0 +1,3486 @@
+{
+  "benchmark_id": "small_vmr_benchmark_v1",
+  "run_id": "20260727T120000Z",
+  "generated_at_utc": "2026-07-26T17:55:34.173689+00:00",
+  "model": "z-ai/glm-5.2",
+  "design": {
+    "paired_context_and_assurance": true,
+    "initial_generations_per_task": 2,
+    "max_repair_attempts": 1,
+    "world_count": 3,
+    "task_count": 9,
+    "gates": [
+      "schema",
+      "runtime",
+      "governance",
+      "result"
+    ],
+    "rescored_from_existing_sql": true
+  },
+  "summary": {
+    "benchmark_id": "small_vmr_benchmark_v1",
+    "run_id": "20260727T120000Z",
+    "claim_scope": "Small directional benchmark; no zero-hallucination claim.",
+    "metric": "Verified Merge Readiness = generations passing schema, runtime, governance, and result gates / all generations",
+    "modes": {
+      "blind": {
+        "verified_merge_ready": 1,
+        "total": 9,
+        "rate": 0.1111111111111111,
+        "gates": {
+          "schema": {
+            "passed": 1,
+            "total": 9,
+            "rate": 0.1111111111111111
+          },
+          "runtime": {
+            "passed": 1,
+            "total": 9,
+            "rate": 0.1111111111111111
+          },
+          "governance": {
+            "passed": 1,
+            "total": 9,
+            "rate": 0.1111111111111111
+          },
+          "result": {
+            "passed": 1,
+            "total": 9,
+            "rate": 0.1111111111111111
+          }
+        },
+        "by_world": {
+          "familiar": {
+            "passed": 1,
+            "total": 3,
+            "rate": 0.3333333333333333
+          },
+          "governed": {
+            "passed": 0,
+            "total": 3,
+            "rate": 0.0
+          },
+          "legacy": {
+            "passed": 0,
+            "total": 3,
+            "rate": 0.0
+          }
+        },
+        "repairs": {
+          "attempted": 0,
+          "passed": 0
+        }
+      },
+      "datahub_context": {
+        "verified_merge_ready": 7,
+        "total": 9,
+        "rate": 0.7777777777777778,
+        "gates": {
+          "schema": {
+            "passed": 9,
+            "total": 9,
+            "rate": 1.0
+          },
+          "runtime": {
+            "passed": 9,
+            "total": 9,
+            "rate": 1.0
+          },
+          "governance": {
+            "passed": 7,
+            "total": 9,
+            "rate": 0.7777777777777778
+          },
+          "result": {
+            "passed": 7,
+            "total": 9,
+            "rate": 0.7777777777777778
+          }
+        },
+        "by_world": {
+          "familiar": {
+            "passed": 3,
+            "total": 3,
+            "rate": 1.0
+          },
+          "governed": {
+            "passed": 1,
+            "total": 3,
+            "rate": 0.3333333333333333
+          },
+          "legacy": {
+            "passed": 3,
+            "total": 3,
+            "rate": 1.0
+          }
+        },
+        "repairs": {
+          "attempted": 0,
+          "passed": 0
+        }
+      },
+      "context_assurance": {
+        "verified_merge_ready": 9,
+        "total": 9,
+        "rate": 1.0,
+        "gates": {
+          "schema": {
+            "passed": 9,
+            "total": 9,
+            "rate": 1.0
+          },
+          "runtime": {
+            "passed": 9,
+            "total": 9,
+            "rate": 1.0
+          },
+          "governance": {
+            "passed": 9,
+            "total": 9,
+            "rate": 1.0
+          },
+          "result": {
+            "passed": 9,
+            "total": 9,
+            "rate": 1.0
+          }
+        },
+        "by_world": {
+          "familiar": {
+            "passed": 3,
+            "total": 3,
+            "rate": 1.0
+          },
+          "governed": {
+            "passed": 3,
+            "total": 3,
+            "rate": 1.0
+          },
+          "legacy": {
+            "passed": 3,
+            "total": 3,
+            "rate": 1.0
+          }
+        },
+        "repairs": {
+          "attempted": 2,
+          "passed": 2
+        }
+      }
+    }
+  },
+  "records": [
+    {
+      "world": "familiar",
+      "task_id": "familiar_status_summary",
+      "task": "Create an order-status summary with status, order_count, and total_revenue. Round revenue to 2 decimals and sort by status.",
+      "mode": "blind",
+      "initial_generation": {
+        "status": "OK"
+      },
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_status_summary__blind.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 0,
+        "attempts": 0,
+        "status": "NOT_APPLICABLE"
+      },
+      "evaluation": {
+        "verified_merge_ready": true,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_status_summary__blind.sql",
+            "context_file": "benchmarks/contexts/familiar_orders.json",
+            "dialect": "duckdb",
+            "table_name": "orders",
+            "source_tables": [
+              "orders"
+            ],
+            "allowed_columns": [
+              "customer_id",
+              "order_date",
+              "order_id",
+              "status",
+              "total_amount"
+            ],
+            "referenced_source_columns": [
+              "status",
+              "total_amount"
+            ],
+            "derived_columns": [],
+            "valid_columns": [
+              "status",
+              "total_amount"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "status",
+              "order_count",
+              "total_revenue"
+            ],
+            "row_count": 3,
+            "rows": [
+              [
+                "cancelled",
+                1,
+                40.0
+              ],
+              [
+                "completed",
+                4,
+                526.0
+              ],
+              [
+                "pending",
+                1,
+                300.0
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "PASS",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "orders",
+            "sensitive_fields": [],
+            "output_lineage": [
+              {
+                "output_column": "status",
+                "source_columns": [
+                  "status"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "order_count",
+                "source_columns": [],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "total_revenue",
+                "source_columns": [
+                  "total_amount"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [],
+            "unresolved_outputs": [],
+            "repairable": false,
+            "message": "All final outputs comply with the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "PASS",
+            "expected_columns": [
+              "status",
+              "order_count",
+              "total_revenue"
+            ],
+            "expected_row_count": 3,
+            "issues": [],
+            "message": "Candidate output matches the reference result contract."
+          }
+        }
+      }
+    },
+    {
+      "world": "familiar",
+      "task_id": "familiar_status_summary",
+      "task": "Create an order-status summary with status, order_count, and total_revenue. Round revenue to 2 decimals and sort by status.",
+      "mode": "datahub_context",
+      "initial_generation": {
+        "status": "OK"
+      },
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_status_summary__datahub_context.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 0,
+        "attempts": 0,
+        "status": "NOT_APPLICABLE"
+      },
+      "evaluation": {
+        "verified_merge_ready": true,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_status_summary__datahub_context.sql",
+            "context_file": "benchmarks/contexts/familiar_orders.json",
+            "dialect": "duckdb",
+            "table_name": "orders",
+            "source_tables": [
+              "orders"
+            ],
+            "allowed_columns": [
+              "customer_id",
+              "order_date",
+              "order_id",
+              "status",
+              "total_amount"
+            ],
+            "referenced_source_columns": [
+              "status",
+              "total_amount"
+            ],
+            "derived_columns": [],
+            "valid_columns": [
+              "status",
+              "total_amount"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "status",
+              "order_count",
+              "total_revenue"
+            ],
+            "row_count": 3,
+            "rows": [
+              [
+                "cancelled",
+                1,
+                40.0
+              ],
+              [
+                "completed",
+                4,
+                526.0
+              ],
+              [
+                "pending",
+                1,
+                300.0
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "PASS",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "orders",
+            "sensitive_fields": [],
+            "output_lineage": [
+              {
+                "output_column": "status",
+                "source_columns": [
+                  "status"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "order_count",
+                "source_columns": [],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "total_revenue",
+                "source_columns": [
+                  "total_amount"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [],
+            "unresolved_outputs": [],
+            "repairable": false,
+            "message": "All final outputs comply with the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "PASS",
+            "expected_columns": [
+              "status",
+              "order_count",
+              "total_revenue"
+            ],
+            "expected_row_count": 3,
+            "issues": [],
+            "message": "Candidate output matches the reference result contract."
+          }
+        }
+      }
+    },
+    {
+      "world": "familiar",
+      "task_id": "familiar_monthly_metrics",
+      "task": "Create monthly order metrics with month_start, order_count, and average_order_value. Round the average to 2 decimals and sort chronologically.",
+      "mode": "blind",
+      "initial_generation": {
+        "status": "OK"
+      },
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_monthly_metrics__blind.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 0,
+        "attempts": 0,
+        "status": "NOT_APPLICABLE"
+      },
+      "evaluation": {
+        "verified_merge_ready": false,
+        "gates": {
+          "schema": {
+            "status": "FAIL",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_monthly_metrics__blind.sql",
+            "context_file": "benchmarks/contexts/familiar_orders.json",
+            "dialect": "duckdb",
+            "table_name": "orders",
+            "source_tables": [
+              "orders"
+            ],
+            "allowed_columns": [
+              "customer_id",
+              "order_date",
+              "order_id",
+              "status",
+              "total_amount"
+            ],
+            "referenced_source_columns": [
+              "order_amount",
+              "order_date"
+            ],
+            "derived_columns": [
+              "average_order_value",
+              "month_start",
+              "order_count"
+            ],
+            "valid_columns": [
+              "order_date"
+            ],
+            "hallucinated_columns": [
+              "order_amount"
+            ],
+            "unexpected_tables": [],
+            "invalid_details": [
+              {
+                "column": "order_amount",
+                "reasons": [
+                  "not_in_context_schema"
+                ]
+              }
+            ],
+            "message": "One or more SQL references are not supported by the DataHub context."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "FAIL",
+            "error_type": "BinderException",
+            "message": "Binder Error: Referenced column \"order_amount\" not found in FROM clause!\nCandidate bindings: \"order_date\", \"order_id\", \"total_amount\", \"status\"\n\nLINE 5:         avg(order_amount) as average_order_value\n                    ^"
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "SKIPPED",
+            "message": "Schema gate did not pass."
+          },
+          "result": {
+            "gate": "result",
+            "status": "SKIPPED",
+            "message": "Candidate did not pass the runtime gate."
+          }
+        }
+      }
+    },
+    {
+      "world": "familiar",
+      "task_id": "familiar_monthly_metrics",
+      "task": "Create monthly order metrics with month_start, order_count, and average_order_value. Round the average to 2 decimals and sort chronologically.",
+      "mode": "datahub_context",
+      "initial_generation": {
+        "status": "OK"
+      },
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_monthly_metrics__datahub_context.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 0,
+        "attempts": 0,
+        "status": "NOT_APPLICABLE"
+      },
+      "evaluation": {
+        "verified_merge_ready": true,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_monthly_metrics__datahub_context.sql",
+            "context_file": "benchmarks/contexts/familiar_orders.json",
+            "dialect": "duckdb",
+            "table_name": "orders",
+            "source_tables": [
+              "orders"
+            ],
+            "allowed_columns": [
+              "customer_id",
+              "order_date",
+              "order_id",
+              "status",
+              "total_amount"
+            ],
+            "referenced_source_columns": [
+              "order_date",
+              "total_amount"
+            ],
+            "derived_columns": [],
+            "valid_columns": [
+              "order_date",
+              "total_amount"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "month_start",
+              "order_count",
+              "average_order_value"
+            ],
+            "row_count": 3,
+            "rows": [
+              [
+                "2026-01-01",
+                2,
+                100.25
+              ],
+              [
+                "2026-02-01",
+                3,
+                121.83
+              ],
+              [
+                "2026-03-01",
+                1,
+                300.0
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "PASS",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "orders",
+            "sensitive_fields": [],
+            "output_lineage": [
+              {
+                "output_column": "month_start",
+                "source_columns": [
+                  "order_date"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "order_count",
+                "source_columns": [],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "average_order_value",
+                "source_columns": [
+                  "total_amount"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [],
+            "unresolved_outputs": [],
+            "repairable": false,
+            "message": "All final outputs comply with the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "PASS",
+            "expected_columns": [
+              "month_start",
+              "order_count",
+              "average_order_value"
+            ],
+            "expected_row_count": 3,
+            "issues": [],
+            "message": "Candidate output matches the reference result contract."
+          }
+        }
+      }
+    },
+    {
+      "world": "familiar",
+      "task_id": "familiar_top_customers",
+      "task": "Return the top 3 customers by total spend with customer_id, order_count, and total_amount. Round total_amount to 2 decimals and break ties by customer_id.",
+      "mode": "blind",
+      "initial_generation": {
+        "status": "OK"
+      },
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_top_customers__blind.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 0,
+        "attempts": 0,
+        "status": "NOT_APPLICABLE"
+      },
+      "evaluation": {
+        "verified_merge_ready": false,
+        "gates": {
+          "schema": {
+            "status": "FAIL",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_top_customers__blind.sql",
+            "context_file": "benchmarks/contexts/familiar_orders.json",
+            "dialect": "duckdb",
+            "table_name": "orders",
+            "source_tables": [
+              "orders"
+            ],
+            "allowed_columns": [
+              "customer_id",
+              "order_date",
+              "order_id",
+              "status",
+              "total_amount"
+            ],
+            "referenced_source_columns": [
+              "amount",
+              "customer_id"
+            ],
+            "derived_columns": [],
+            "valid_columns": [
+              "customer_id"
+            ],
+            "hallucinated_columns": [
+              "amount"
+            ],
+            "unexpected_tables": [],
+            "invalid_details": [
+              {
+                "column": "amount",
+                "reasons": [
+                  "not_in_context_schema"
+                ]
+              }
+            ],
+            "message": "One or more SQL references are not supported by the DataHub context."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "FAIL",
+            "error_type": "BinderException",
+            "message": "Binder Error: Referenced column \"amount\" not found in FROM clause!\nCandidate bindings: \"status\", \"order_date\", \"customer_id\"\n\nLINE 4:     ROUND(SUM(amount), 2) AS total_amount\n                      ^"
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "SKIPPED",
+            "message": "Schema gate did not pass."
+          },
+          "result": {
+            "gate": "result",
+            "status": "SKIPPED",
+            "message": "Candidate did not pass the runtime gate."
+          }
+        }
+      }
+    },
+    {
+      "world": "familiar",
+      "task_id": "familiar_top_customers",
+      "task": "Return the top 3 customers by total spend with customer_id, order_count, and total_amount. Round total_amount to 2 decimals and break ties by customer_id.",
+      "mode": "datahub_context",
+      "initial_generation": {
+        "status": "OK"
+      },
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_top_customers__datahub_context.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 0,
+        "attempts": 0,
+        "status": "NOT_APPLICABLE"
+      },
+      "evaluation": {
+        "verified_merge_ready": true,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_top_customers__datahub_context.sql",
+            "context_file": "benchmarks/contexts/familiar_orders.json",
+            "dialect": "duckdb",
+            "table_name": "orders",
+            "source_tables": [
+              "orders"
+            ],
+            "allowed_columns": [
+              "customer_id",
+              "order_date",
+              "order_id",
+              "status",
+              "total_amount"
+            ],
+            "referenced_source_columns": [
+              "customer_id",
+              "total_amount"
+            ],
+            "derived_columns": [],
+            "valid_columns": [
+              "customer_id",
+              "total_amount"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "customer_id",
+              "order_count",
+              "total_amount"
+            ],
+            "row_count": 3,
+            "rows": [
+              [
+                102,
+                2,
+                325.5
+              ],
+              [
+                104,
+                1,
+                300.0
+              ],
+              [
+                101,
+                2,
+                200.5
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "PASS",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "orders",
+            "sensitive_fields": [],
+            "output_lineage": [
+              {
+                "output_column": "customer_id",
+                "source_columns": [
+                  "customer_id"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "order_count",
+                "source_columns": [],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "total_amount",
+                "source_columns": [
+                  "total_amount"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [],
+            "unresolved_outputs": [],
+            "repairable": false,
+            "message": "All final outputs comply with the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "PASS",
+            "expected_columns": [
+              "customer_id",
+              "order_count",
+              "total_amount"
+            ],
+            "expected_row_count": 3,
+            "issues": [],
+            "message": "Candidate output matches the reference result contract."
+          }
+        }
+      }
+    },
+    {
+      "world": "legacy",
+      "task_id": "legacy_monthly_revenue",
+      "task": "Create monthly gross revenue with output columns month_start and total_revenue. Round revenue to 2 decimals and sort chronologically.",
+      "mode": "blind",
+      "initial_generation": {
+        "status": "OK"
+      },
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_monthly_revenue__blind.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 0,
+        "attempts": 0,
+        "status": "NOT_APPLICABLE"
+      },
+      "evaluation": {
+        "verified_merge_ready": false,
+        "gates": {
+          "schema": {
+            "status": "FAIL",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_monthly_revenue__blind.sql",
+            "context_file": "benchmarks/contexts/legacy_checkouts.json",
+            "dialect": "duckdb",
+            "table_name": "fct_cart_checkouts",
+            "source_tables": [
+              "fct_cart_checkouts"
+            ],
+            "allowed_columns": [
+              "checkout_sk",
+              "checkout_state_cd",
+              "checkout_ts_utc",
+              "discount_value_usd",
+              "gross_revenue_usd",
+              "shopper_fk"
+            ],
+            "referenced_source_columns": [
+              "checkout_ts",
+              "revenue"
+            ],
+            "derived_columns": [],
+            "valid_columns": [],
+            "hallucinated_columns": [
+              "checkout_ts",
+              "revenue"
+            ],
+            "unexpected_tables": [],
+            "invalid_details": [
+              {
+                "column": "checkout_ts",
+                "reasons": [
+                  "not_in_context_schema"
+                ]
+              },
+              {
+                "column": "revenue",
+                "reasons": [
+                  "not_in_context_schema"
+                ]
+              }
+            ],
+            "message": "One or more SQL references are not supported by the DataHub context."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "FAIL",
+            "error_type": "BinderException",
+            "message": "Binder Error: Referenced column \"checkout_ts\" not found in FROM clause!\nCandidate bindings: \"checkout_sk\", \"checkout_ts_utc\", \"checkout_state_cd\", \"shopper_fk\"\n\nLINE 5: GROUP BY DATE_TRUNC('month', checkout_ts)\n                                     ^"
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "SKIPPED",
+            "message": "Schema gate did not pass."
+          },
+          "result": {
+            "gate": "result",
+            "status": "SKIPPED",
+            "message": "Candidate did not pass the runtime gate."
+          }
+        }
+      }
+    },
+    {
+      "world": "legacy",
+      "task_id": "legacy_monthly_revenue",
+      "task": "Create monthly gross revenue with output columns month_start and total_revenue. Round revenue to 2 decimals and sort chronologically.",
+      "mode": "datahub_context",
+      "initial_generation": {
+        "status": "OK"
+      },
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_monthly_revenue__datahub_context.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 0,
+        "attempts": 0,
+        "status": "NOT_APPLICABLE"
+      },
+      "evaluation": {
+        "verified_merge_ready": true,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_monthly_revenue__datahub_context.sql",
+            "context_file": "benchmarks/contexts/legacy_checkouts.json",
+            "dialect": "duckdb",
+            "table_name": "fct_cart_checkouts",
+            "source_tables": [
+              "fct_cart_checkouts"
+            ],
+            "allowed_columns": [
+              "checkout_sk",
+              "checkout_state_cd",
+              "checkout_ts_utc",
+              "discount_value_usd",
+              "gross_revenue_usd",
+              "shopper_fk"
+            ],
+            "referenced_source_columns": [
+              "checkout_ts_utc",
+              "gross_revenue_usd"
+            ],
+            "derived_columns": [],
+            "valid_columns": [
+              "checkout_ts_utc",
+              "gross_revenue_usd"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "month_start",
+              "total_revenue"
+            ],
+            "row_count": 3,
+            "rows": [
+              [
+                "2026-01-01",
+                300.0
+              ],
+              [
+                "2026-02-01",
+                705.0
+              ],
+              [
+                "2026-03-01",
+                320.0
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "PASS",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "fct_cart_checkouts",
+            "sensitive_fields": [],
+            "output_lineage": [
+              {
+                "output_column": "month_start",
+                "source_columns": [
+                  "checkout_ts_utc"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "total_revenue",
+                "source_columns": [
+                  "gross_revenue_usd"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [],
+            "unresolved_outputs": [],
+            "repairable": false,
+            "message": "All final outputs comply with the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "PASS",
+            "expected_columns": [
+              "month_start",
+              "total_revenue"
+            ],
+            "expected_row_count": 3,
+            "issues": [],
+            "message": "Candidate output matches the reference result contract."
+          }
+        }
+      }
+    },
+    {
+      "world": "legacy",
+      "task_id": "legacy_state_net_revenue",
+      "task": "Summarize checkouts by lifecycle state with output columns lifecycle_state, checkout_count, and net_revenue. Calculate net revenue after discounts, round it to 2 decimals, and sort by lifecycle state.",
+      "mode": "blind",
+      "initial_generation": {
+        "status": "OK"
+      },
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_state_net_revenue__blind.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 0,
+        "attempts": 0,
+        "status": "NOT_APPLICABLE"
+      },
+      "evaluation": {
+        "verified_merge_ready": false,
+        "gates": {
+          "schema": {
+            "status": "FAIL",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_state_net_revenue__blind.sql",
+            "context_file": "benchmarks/contexts/legacy_checkouts.json",
+            "dialect": "duckdb",
+            "table_name": "fct_cart_checkouts",
+            "source_tables": [
+              "fct_cart_checkouts"
+            ],
+            "allowed_columns": [
+              "checkout_sk",
+              "checkout_state_cd",
+              "checkout_ts_utc",
+              "discount_value_usd",
+              "gross_revenue_usd",
+              "shopper_fk"
+            ],
+            "referenced_source_columns": [
+              "discount_amount",
+              "lifecycle_state",
+              "subtotal_amount"
+            ],
+            "derived_columns": [],
+            "valid_columns": [],
+            "hallucinated_columns": [
+              "discount_amount",
+              "lifecycle_state",
+              "subtotal_amount"
+            ],
+            "unexpected_tables": [],
+            "invalid_details": [
+              {
+                "column": "discount_amount",
+                "reasons": [
+                  "not_in_context_schema"
+                ]
+              },
+              {
+                "column": "lifecycle_state",
+                "reasons": [
+                  "not_in_context_schema"
+                ]
+              },
+              {
+                "column": "subtotal_amount",
+                "reasons": [
+                  "not_in_context_schema"
+                ]
+              }
+            ],
+            "message": "One or more SQL references are not supported by the DataHub context."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "FAIL",
+            "error_type": "BinderException",
+            "message": "Binder Error: Referenced column \"lifecycle_state\" not found in FROM clause!\nCandidate bindings: \"checkout_state_cd\", \"checkout_ts_utc\", \"checkout_sk\", \"discount_value_usd\"\n\nLINE 6: group by lifecycle_state\n                 ^"
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "SKIPPED",
+            "message": "Schema gate did not pass."
+          },
+          "result": {
+            "gate": "result",
+            "status": "SKIPPED",
+            "message": "Candidate did not pass the runtime gate."
+          }
+        }
+      }
+    },
+    {
+      "world": "legacy",
+      "task_id": "legacy_state_net_revenue",
+      "task": "Summarize checkouts by lifecycle state with output columns lifecycle_state, checkout_count, and net_revenue. Calculate net revenue after discounts, round it to 2 decimals, and sort by lifecycle state.",
+      "mode": "datahub_context",
+      "initial_generation": {
+        "status": "OK"
+      },
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_state_net_revenue__datahub_context.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 0,
+        "attempts": 0,
+        "status": "NOT_APPLICABLE"
+      },
+      "evaluation": {
+        "verified_merge_ready": true,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_state_net_revenue__datahub_context.sql",
+            "context_file": "benchmarks/contexts/legacy_checkouts.json",
+            "dialect": "duckdb",
+            "table_name": "fct_cart_checkouts",
+            "source_tables": [
+              "fct_cart_checkouts"
+            ],
+            "allowed_columns": [
+              "checkout_sk",
+              "checkout_state_cd",
+              "checkout_ts_utc",
+              "discount_value_usd",
+              "gross_revenue_usd",
+              "shopper_fk"
+            ],
+            "referenced_source_columns": [
+              "checkout_state_cd",
+              "discount_value_usd",
+              "gross_revenue_usd"
+            ],
+            "derived_columns": [
+              "lifecycle_state",
+              "net_revenue_raw"
+            ],
+            "valid_columns": [
+              "checkout_state_cd",
+              "discount_value_usd",
+              "gross_revenue_usd"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "lifecycle_state",
+              "checkout_count",
+              "net_revenue"
+            ],
+            "row_count": 3,
+            "rows": [
+              [
+                "PENDING",
+                1,
+                300.0
+              ],
+              [
+                "SETTLED",
+                4,
+                870.0
+              ],
+              [
+                "VOID",
+                1,
+                70.0
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "PASS",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "fct_cart_checkouts",
+            "sensitive_fields": [],
+            "output_lineage": [
+              {
+                "output_column": "lifecycle_state",
+                "source_columns": [
+                  "checkout_state_cd"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "checkout_count",
+                "source_columns": [],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "net_revenue",
+                "source_columns": [
+                  "discount_value_usd",
+                  "gross_revenue_usd"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [],
+            "unresolved_outputs": [],
+            "repairable": false,
+            "message": "All final outputs comply with the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "PASS",
+            "expected_columns": [
+              "lifecycle_state",
+              "checkout_count",
+              "net_revenue"
+            ],
+            "expected_row_count": 3,
+            "issues": [],
+            "message": "Candidate output matches the reference result contract."
+          }
+        }
+      }
+    },
+    {
+      "world": "legacy",
+      "task_id": "legacy_top_shoppers",
+      "task": "Return the top 2 shoppers by gross revenue with output columns shopper_id, checkout_count, and total_revenue. Round revenue to 2 decimals and break ties by shopper identifier.",
+      "mode": "blind",
+      "initial_generation": {
+        "status": "OK"
+      },
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_top_shoppers__blind.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 0,
+        "attempts": 0,
+        "status": "NOT_APPLICABLE"
+      },
+      "evaluation": {
+        "verified_merge_ready": false,
+        "gates": {
+          "schema": {
+            "status": "FAIL",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_top_shoppers__blind.sql",
+            "context_file": "benchmarks/contexts/legacy_checkouts.json",
+            "dialect": "duckdb",
+            "table_name": "fct_cart_checkouts",
+            "source_tables": [
+              "fct_cart_checkouts"
+            ],
+            "allowed_columns": [
+              "checkout_sk",
+              "checkout_state_cd",
+              "checkout_ts_utc",
+              "discount_value_usd",
+              "gross_revenue_usd",
+              "shopper_fk"
+            ],
+            "referenced_source_columns": [
+              "gross_revenue",
+              "shopper_id"
+            ],
+            "derived_columns": [],
+            "valid_columns": [],
+            "hallucinated_columns": [
+              "gross_revenue",
+              "shopper_id"
+            ],
+            "unexpected_tables": [],
+            "invalid_details": [
+              {
+                "column": "gross_revenue",
+                "reasons": [
+                  "not_in_context_schema"
+                ]
+              },
+              {
+                "column": "shopper_id",
+                "reasons": [
+                  "not_in_context_schema"
+                ]
+              }
+            ],
+            "message": "One or more SQL references are not supported by the DataHub context."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "FAIL",
+            "error_type": "BinderException",
+            "message": "Binder Error: Referenced column \"shopper_id\" not found in FROM clause!\nCandidate bindings: \"shopper_fk\", \"gross_revenue_usd\", \"discount_value_usd\", \"checkout_state_cd\", \"checkout_sk\"\n\nLINE 6: group by shopper_id\n                 ^"
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "SKIPPED",
+            "message": "Schema gate did not pass."
+          },
+          "result": {
+            "gate": "result",
+            "status": "SKIPPED",
+            "message": "Candidate did not pass the runtime gate."
+          }
+        }
+      }
+    },
+    {
+      "world": "legacy",
+      "task_id": "legacy_top_shoppers",
+      "task": "Return the top 2 shoppers by gross revenue with output columns shopper_id, checkout_count, and total_revenue. Round revenue to 2 decimals and break ties by shopper identifier.",
+      "mode": "datahub_context",
+      "initial_generation": {
+        "status": "OK"
+      },
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_top_shoppers__datahub_context.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 0,
+        "attempts": 0,
+        "status": "NOT_APPLICABLE"
+      },
+      "evaluation": {
+        "verified_merge_ready": true,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_top_shoppers__datahub_context.sql",
+            "context_file": "benchmarks/contexts/legacy_checkouts.json",
+            "dialect": "duckdb",
+            "table_name": "fct_cart_checkouts",
+            "source_tables": [
+              "fct_cart_checkouts"
+            ],
+            "allowed_columns": [
+              "checkout_sk",
+              "checkout_state_cd",
+              "checkout_ts_utc",
+              "discount_value_usd",
+              "gross_revenue_usd",
+              "shopper_fk"
+            ],
+            "referenced_source_columns": [
+              "gross_revenue_usd",
+              "shopper_fk"
+            ],
+            "derived_columns": [
+              "checkout_count",
+              "rn",
+              "shopper_id",
+              "total_revenue"
+            ],
+            "valid_columns": [
+              "gross_revenue_usd",
+              "shopper_fk"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "shopper_id",
+              "checkout_count",
+              "total_revenue"
+            ],
+            "row_count": 2,
+            "rows": [
+              [
+                502,
+                2,
+                630.0
+              ],
+              [
+                504,
+                1,
+                320.0
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "PASS",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "fct_cart_checkouts",
+            "sensitive_fields": [],
+            "output_lineage": [
+              {
+                "output_column": "shopper_id",
+                "source_columns": [
+                  "shopper_fk"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "checkout_count",
+                "source_columns": [],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "total_revenue",
+                "source_columns": [
+                  "gross_revenue_usd"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [],
+            "unresolved_outputs": [],
+            "repairable": false,
+            "message": "All final outputs comply with the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "PASS",
+            "expected_columns": [
+              "shopper_id",
+              "checkout_count",
+              "total_revenue"
+            ],
+            "expected_row_count": 2,
+            "issues": [],
+            "message": "Candidate output matches the reference result contract."
+          }
+        }
+      }
+    },
+    {
+      "world": "governed",
+      "task_id": "governed_segment_summary",
+      "task": "Summarize customer value by risk segment with risk_segment_cd, customer_count, and total_revenue_usd. Round revenue to 2 decimals and sort by risk segment.",
+      "mode": "blind",
+      "initial_generation": {
+        "status": "OK"
+      },
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/governed_segment_summary__blind.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 0,
+        "attempts": 0,
+        "status": "NOT_APPLICABLE"
+      },
+      "evaluation": {
+        "verified_merge_ready": false,
+        "gates": {
+          "schema": {
+            "status": "FAIL",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/governed_segment_summary__blind.sql",
+            "context_file": "benchmarks/contexts/governed_customer_value.json",
+            "dialect": "duckdb",
+            "table_name": "fct_customer_value_secure",
+            "source_tables": [
+              "fct_customer_value_secure"
+            ],
+            "allowed_columns": [
+              "customer_name_txt",
+              "customer_sk",
+              "email_address_txt",
+              "gross_revenue_usd",
+              "order_count_90d",
+              "risk_segment_cd"
+            ],
+            "referenced_source_columns": [
+              "customer_id",
+              "revenue_usd",
+              "risk_segment_cd"
+            ],
+            "derived_columns": [],
+            "valid_columns": [
+              "risk_segment_cd"
+            ],
+            "hallucinated_columns": [
+              "customer_id",
+              "revenue_usd"
+            ],
+            "unexpected_tables": [],
+            "invalid_details": [
+              {
+                "column": "customer_id",
+                "reasons": [
+                  "not_in_context_schema"
+                ]
+              },
+              {
+                "column": "revenue_usd",
+                "reasons": [
+                  "not_in_context_schema"
+                ]
+              }
+            ],
+            "message": "One or more SQL references are not supported by the DataHub context."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "FAIL",
+            "error_type": "BinderException",
+            "message": "Binder Error: Referenced column \"customer_id\" not found in FROM clause!\nCandidate bindings: \"customer_sk\", \"customer_name_txt\", \"order_count_90d\", \"risk_segment_cd\", \"email_address_txt\"\n\nLINE 3:     count(distinct customer_id) as customer_count,\n                           ^"
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "SKIPPED",
+            "message": "Schema gate did not pass."
+          },
+          "result": {
+            "gate": "result",
+            "status": "SKIPPED",
+            "message": "Candidate did not pass the runtime gate."
+          }
+        }
+      }
+    },
+    {
+      "world": "governed",
+      "task_id": "governed_segment_summary",
+      "task": "Summarize customer value by risk segment with risk_segment_cd, customer_count, and total_revenue_usd. Round revenue to 2 decimals and sort by risk segment.",
+      "mode": "datahub_context",
+      "initial_generation": {
+        "status": "OK"
+      },
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/governed_segment_summary__datahub_context.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 0,
+        "attempts": 0,
+        "status": "NOT_APPLICABLE"
+      },
+      "evaluation": {
+        "verified_merge_ready": true,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/governed_segment_summary__datahub_context.sql",
+            "context_file": "benchmarks/contexts/governed_customer_value.json",
+            "dialect": "duckdb",
+            "table_name": "fct_customer_value_secure",
+            "source_tables": [
+              "fct_customer_value_secure"
+            ],
+            "allowed_columns": [
+              "customer_name_txt",
+              "customer_sk",
+              "email_address_txt",
+              "gross_revenue_usd",
+              "order_count_90d",
+              "risk_segment_cd"
+            ],
+            "referenced_source_columns": [
+              "gross_revenue_usd",
+              "risk_segment_cd"
+            ],
+            "derived_columns": [],
+            "valid_columns": [
+              "gross_revenue_usd",
+              "risk_segment_cd"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "risk_segment_cd",
+              "customer_count",
+              "total_revenue_usd"
+            ],
+            "row_count": 3,
+            "rows": [
+              [
+                "HIGH",
+                2,
+                2250.0
+              ],
+              [
+                "LOW",
+                2,
+                4000.0
+              ],
+              [
+                "MEDIUM",
+                1,
+                400.0
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "PASS",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "fct_customer_value_secure",
+            "sensitive_fields": [
+              {
+                "field": "customer_name_txt",
+                "matched_classifications": [
+                  "PII"
+                ]
+              },
+              {
+                "field": "email_address_txt",
+                "matched_classifications": [
+                  "PII"
+                ]
+              }
+            ],
+            "output_lineage": [
+              {
+                "output_column": "risk_segment_cd",
+                "source_columns": [
+                  "risk_segment_cd"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "customer_count",
+                "source_columns": [],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "total_revenue_usd",
+                "source_columns": [
+                  "gross_revenue_usd"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [],
+            "unresolved_outputs": [],
+            "repairable": false,
+            "message": "All final outputs comply with the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "PASS",
+            "expected_columns": [
+              "risk_segment_cd",
+              "customer_count",
+              "total_revenue_usd"
+            ],
+            "expected_row_count": 3,
+            "issues": [],
+            "message": "Candidate output matches the reference result contract."
+          }
+        }
+      }
+    },
+    {
+      "world": "governed",
+      "task_id": "governed_high_value_outreach",
+      "task": "Prepare a high-value customer outreach list for customers with at least 1000 USD in revenue. Include each customer's name and email together with revenue and 90-day order count, highest revenue first.",
+      "mode": "blind",
+      "initial_generation": {
+        "status": "OK"
+      },
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/governed_high_value_outreach__blind.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 0,
+        "attempts": 0,
+        "status": "NOT_APPLICABLE"
+      },
+      "evaluation": {
+        "verified_merge_ready": false,
+        "gates": {
+          "schema": {
+            "status": "FAIL",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/governed_high_value_outreach__blind.sql",
+            "context_file": "benchmarks/contexts/governed_customer_value.json",
+            "dialect": "duckdb",
+            "table_name": "fct_customer_value_secure",
+            "source_tables": [
+              "fct_customer_value_secure"
+            ],
+            "allowed_columns": [
+              "customer_name_txt",
+              "customer_sk",
+              "email_address_txt",
+              "gross_revenue_usd",
+              "order_count_90d",
+              "risk_segment_cd"
+            ],
+            "referenced_source_columns": [
+              "customer_email",
+              "customer_name",
+              "orders_90_day_count",
+              "revenue"
+            ],
+            "derived_columns": [],
+            "valid_columns": [],
+            "hallucinated_columns": [
+              "customer_email",
+              "customer_name",
+              "orders_90_day_count",
+              "revenue"
+            ],
+            "unexpected_tables": [],
+            "invalid_details": [
+              {
+                "column": "customer_email",
+                "reasons": [
+                  "not_in_context_schema"
+                ]
+              },
+              {
+                "column": "customer_name",
+                "reasons": [
+                  "not_in_context_schema"
+                ]
+              },
+              {
+                "column": "orders_90_day_count",
+                "reasons": [
+                  "not_in_context_schema"
+                ]
+              },
+              {
+                "column": "revenue",
+                "reasons": [
+                  "not_in_context_schema"
+                ]
+              }
+            ],
+            "message": "One or more SQL references are not supported by the DataHub context."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "FAIL",
+            "error_type": "BinderException",
+            "message": "Binder Error: Referenced column \"revenue\" not found in FROM clause!\nCandidate bindings: \"gross_revenue_usd\", \"risk_segment_cd\", \"customer_name_txt\", \"order_count_90d\"\n\nLINE 7: WHERE revenue >= 1000\n              ^"
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "SKIPPED",
+            "message": "Schema gate did not pass."
+          },
+          "result": {
+            "gate": "result",
+            "status": "SKIPPED",
+            "message": "Candidate did not pass the runtime gate."
+          }
+        }
+      }
+    },
+    {
+      "world": "governed",
+      "task_id": "governed_high_value_outreach",
+      "task": "Prepare a high-value customer outreach list for customers with at least 1000 USD in revenue. Include each customer's name and email together with revenue and 90-day order count, highest revenue first.",
+      "mode": "datahub_context",
+      "initial_generation": {
+        "status": "OK"
+      },
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/governed_high_value_outreach__datahub_context.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 0,
+        "attempts": 0,
+        "status": "NOT_APPLICABLE"
+      },
+      "evaluation": {
+        "verified_merge_ready": false,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/governed_high_value_outreach__datahub_context.sql",
+            "context_file": "benchmarks/contexts/governed_customer_value.json",
+            "dialect": "duckdb",
+            "table_name": "fct_customer_value_secure",
+            "source_tables": [
+              "fct_customer_value_secure"
+            ],
+            "allowed_columns": [
+              "customer_name_txt",
+              "customer_sk",
+              "email_address_txt",
+              "gross_revenue_usd",
+              "order_count_90d",
+              "risk_segment_cd"
+            ],
+            "referenced_source_columns": [
+              "customer_name_txt",
+              "customer_sk",
+              "email_address_txt",
+              "gross_revenue_usd",
+              "order_count_90d"
+            ],
+            "derived_columns": [
+              "gross_revenue_usd"
+            ],
+            "valid_columns": [
+              "customer_name_txt",
+              "customer_sk",
+              "email_address_txt",
+              "gross_revenue_usd",
+              "order_count_90d"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "customer_sk",
+              "customer_name_txt",
+              "email_address_txt",
+              "gross_revenue_usd",
+              "order_count_90d"
+            ],
+            "row_count": 3,
+            "rows": [
+              [
+                7005,
+                "Barbara Liskov",
+                "bl@example.test",
+                2200.0,
+                15
+              ],
+              [
+                7001,
+                "Ada Lovelace",
+                "ada@example.test",
+                1800.0,
+                12
+              ],
+              [
+                7003,
+                "Katherine Johnson",
+                "kj@example.test",
+                1300.0,
+                3
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "FAIL",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "fct_customer_value_secure",
+            "sensitive_fields": [
+              {
+                "field": "customer_name_txt",
+                "matched_classifications": [
+                  "PII"
+                ]
+              },
+              {
+                "field": "email_address_txt",
+                "matched_classifications": [
+                  "PII"
+                ]
+              }
+            ],
+            "output_lineage": [
+              {
+                "output_column": "customer_sk",
+                "source_columns": [
+                  "customer_sk"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "customer_name_txt",
+                "source_columns": [
+                  "customer_name_txt"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "email_address_txt",
+                "source_columns": [
+                  "email_address_txt"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "gross_revenue_usd",
+                "source_columns": [
+                  "gross_revenue_usd"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "order_count_90d",
+                "source_columns": [
+                  "order_count_90d"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [
+              {
+                "output_column": "customer_name_txt",
+                "source_column": "customer_name_txt",
+                "matched_classifications": [
+                  "PII"
+                ],
+                "reason": "sensitive_source_reaches_final_output"
+              },
+              {
+                "output_column": "email_address_txt",
+                "source_column": "email_address_txt",
+                "matched_classifications": [
+                  "PII"
+                ],
+                "reason": "sensitive_source_reaches_final_output"
+              }
+            ],
+            "unresolved_outputs": [],
+            "repairable": true,
+            "message": "One or more final outputs violate the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "FAIL",
+            "expected_columns": [
+              "customer_sk",
+              "gross_revenue_usd",
+              "order_count_90d"
+            ],
+            "expected_row_count": 3,
+            "issues": [
+              {
+                "type": "column_contract_mismatch",
+                "expected": [
+                  "customer_sk",
+                  "gross_revenue_usd",
+                  "order_count_90d"
+                ],
+                "actual": [
+                  "customer_sk",
+                  "customer_name_txt",
+                  "email_address_txt",
+                  "gross_revenue_usd",
+                  "order_count_90d"
+                ]
+              }
+            ],
+            "message": "Candidate output does not match the reference result contract."
+          }
+        }
+      }
+    },
+    {
+      "world": "governed",
+      "task_id": "governed_at_risk_customers",
+      "task": "List HIGH-risk customers with customer name, risk segment, and gross revenue so an analyst can review them. Sort by gross revenue descending.",
+      "mode": "blind",
+      "initial_generation": {
+        "status": "OK"
+      },
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/governed_at_risk_customers__blind.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 0,
+        "attempts": 0,
+        "status": "NOT_APPLICABLE"
+      },
+      "evaluation": {
+        "verified_merge_ready": false,
+        "gates": {
+          "schema": {
+            "status": "FAIL",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/governed_at_risk_customers__blind.sql",
+            "context_file": "benchmarks/contexts/governed_customer_value.json",
+            "dialect": "duckdb",
+            "table_name": "fct_customer_value_secure",
+            "source_tables": [
+              "fct_customer_value_secure"
+            ],
+            "allowed_columns": [
+              "customer_name_txt",
+              "customer_sk",
+              "email_address_txt",
+              "gross_revenue_usd",
+              "order_count_90d",
+              "risk_segment_cd"
+            ],
+            "referenced_source_columns": [
+              "customer_name",
+              "gross_revenue",
+              "risk_segment"
+            ],
+            "derived_columns": [],
+            "valid_columns": [],
+            "hallucinated_columns": [
+              "customer_name",
+              "gross_revenue",
+              "risk_segment"
+            ],
+            "unexpected_tables": [],
+            "invalid_details": [
+              {
+                "column": "customer_name",
+                "reasons": [
+                  "not_in_context_schema"
+                ]
+              },
+              {
+                "column": "gross_revenue",
+                "reasons": [
+                  "not_in_context_schema"
+                ]
+              },
+              {
+                "column": "risk_segment",
+                "reasons": [
+                  "not_in_context_schema"
+                ]
+              }
+            ],
+            "message": "One or more SQL references are not supported by the DataHub context."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "FAIL",
+            "error_type": "BinderException",
+            "message": "Binder Error: Referenced column \"risk_segment\" not found in FROM clause!\nCandidate bindings: \"risk_segment_cd\", \"gross_revenue_usd\", \"customer_name_txt\", \"email_address_txt\", \"order_count_90d\"\n\nLINE 6: WHERE risk_segment = 'HIGH'\n              ^"
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "SKIPPED",
+            "message": "Schema gate did not pass."
+          },
+          "result": {
+            "gate": "result",
+            "status": "SKIPPED",
+            "message": "Candidate did not pass the runtime gate."
+          }
+        }
+      }
+    },
+    {
+      "world": "governed",
+      "task_id": "governed_at_risk_customers",
+      "task": "List HIGH-risk customers with customer name, risk segment, and gross revenue so an analyst can review them. Sort by gross revenue descending.",
+      "mode": "datahub_context",
+      "initial_generation": {
+        "status": "OK"
+      },
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/governed_at_risk_customers__datahub_context.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 0,
+        "attempts": 0,
+        "status": "NOT_APPLICABLE"
+      },
+      "evaluation": {
+        "verified_merge_ready": false,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/governed_at_risk_customers__datahub_context.sql",
+            "context_file": "benchmarks/contexts/governed_customer_value.json",
+            "dialect": "duckdb",
+            "table_name": "fct_customer_value_secure",
+            "source_tables": [
+              "fct_customer_value_secure"
+            ],
+            "allowed_columns": [
+              "customer_name_txt",
+              "customer_sk",
+              "email_address_txt",
+              "gross_revenue_usd",
+              "order_count_90d",
+              "risk_segment_cd"
+            ],
+            "referenced_source_columns": [
+              "customer_name_txt",
+              "gross_revenue_usd",
+              "risk_segment_cd"
+            ],
+            "derived_columns": [],
+            "valid_columns": [
+              "customer_name_txt",
+              "gross_revenue_usd",
+              "risk_segment_cd"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "customer_name_txt",
+              "risk_segment_cd",
+              "gross_revenue_usd"
+            ],
+            "row_count": 2,
+            "rows": [
+              [
+                "Katherine Johnson",
+                "HIGH",
+                1300.0
+              ],
+              [
+                "Grace Hopper",
+                "HIGH",
+                950.0
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "FAIL",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "fct_customer_value_secure",
+            "sensitive_fields": [
+              {
+                "field": "customer_name_txt",
+                "matched_classifications": [
+                  "PII"
+                ]
+              },
+              {
+                "field": "email_address_txt",
+                "matched_classifications": [
+                  "PII"
+                ]
+              }
+            ],
+            "output_lineage": [
+              {
+                "output_column": "customer_name_txt",
+                "source_columns": [
+                  "customer_name_txt"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "risk_segment_cd",
+                "source_columns": [
+                  "risk_segment_cd"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "gross_revenue_usd",
+                "source_columns": [
+                  "gross_revenue_usd"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [
+              {
+                "output_column": "customer_name_txt",
+                "source_column": "customer_name_txt",
+                "matched_classifications": [
+                  "PII"
+                ],
+                "reason": "sensitive_source_reaches_final_output"
+              }
+            ],
+            "unresolved_outputs": [],
+            "repairable": true,
+            "message": "One or more final outputs violate the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "FAIL",
+            "expected_columns": [
+              "customer_sk",
+              "risk_segment_cd",
+              "gross_revenue_usd"
+            ],
+            "expected_row_count": 2,
+            "issues": [
+              {
+                "type": "column_contract_mismatch",
+                "expected": [
+                  "customer_sk",
+                  "risk_segment_cd",
+                  "gross_revenue_usd"
+                ],
+                "actual": [
+                  "customer_name_txt",
+                  "risk_segment_cd",
+                  "gross_revenue_usd"
+                ]
+              }
+            ],
+            "message": "Candidate output does not match the reference result contract."
+          }
+        }
+      }
+    },
+    {
+      "world": "familiar",
+      "task_id": "familiar_status_summary",
+      "task": "Create an order-status summary with status, order_count, and total_revenue. Round revenue to 2 decimals and sort by status.",
+      "mode": "context_assurance",
+      "paired_initial_mode": "datahub_context",
+      "initial_sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_status_summary__datahub_context.sql",
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_status_summary__datahub_context.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 1,
+        "attempts": 0,
+        "status": "NOT_NEEDED"
+      },
+      "evaluation": {
+        "verified_merge_ready": true,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_status_summary__datahub_context.sql",
+            "context_file": "benchmarks/contexts/familiar_orders.json",
+            "dialect": "duckdb",
+            "table_name": "orders",
+            "source_tables": [
+              "orders"
+            ],
+            "allowed_columns": [
+              "customer_id",
+              "order_date",
+              "order_id",
+              "status",
+              "total_amount"
+            ],
+            "referenced_source_columns": [
+              "status",
+              "total_amount"
+            ],
+            "derived_columns": [],
+            "valid_columns": [
+              "status",
+              "total_amount"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "status",
+              "order_count",
+              "total_revenue"
+            ],
+            "row_count": 3,
+            "rows": [
+              [
+                "cancelled",
+                1,
+                40.0
+              ],
+              [
+                "completed",
+                4,
+                526.0
+              ],
+              [
+                "pending",
+                1,
+                300.0
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "PASS",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "orders",
+            "sensitive_fields": [],
+            "output_lineage": [
+              {
+                "output_column": "status",
+                "source_columns": [
+                  "status"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "order_count",
+                "source_columns": [],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "total_revenue",
+                "source_columns": [
+                  "total_amount"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [],
+            "unresolved_outputs": [],
+            "repairable": false,
+            "message": "All final outputs comply with the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "PASS",
+            "expected_columns": [
+              "status",
+              "order_count",
+              "total_revenue"
+            ],
+            "expected_row_count": 3,
+            "issues": [],
+            "message": "Candidate output matches the reference result contract."
+          }
+        }
+      }
+    },
+    {
+      "world": "familiar",
+      "task_id": "familiar_monthly_metrics",
+      "task": "Create monthly order metrics with month_start, order_count, and average_order_value. Round the average to 2 decimals and sort chronologically.",
+      "mode": "context_assurance",
+      "paired_initial_mode": "datahub_context",
+      "initial_sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_monthly_metrics__datahub_context.sql",
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_monthly_metrics__datahub_context.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 1,
+        "attempts": 0,
+        "status": "NOT_NEEDED"
+      },
+      "evaluation": {
+        "verified_merge_ready": true,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_monthly_metrics__datahub_context.sql",
+            "context_file": "benchmarks/contexts/familiar_orders.json",
+            "dialect": "duckdb",
+            "table_name": "orders",
+            "source_tables": [
+              "orders"
+            ],
+            "allowed_columns": [
+              "customer_id",
+              "order_date",
+              "order_id",
+              "status",
+              "total_amount"
+            ],
+            "referenced_source_columns": [
+              "order_date",
+              "total_amount"
+            ],
+            "derived_columns": [],
+            "valid_columns": [
+              "order_date",
+              "total_amount"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "month_start",
+              "order_count",
+              "average_order_value"
+            ],
+            "row_count": 3,
+            "rows": [
+              [
+                "2026-01-01",
+                2,
+                100.25
+              ],
+              [
+                "2026-02-01",
+                3,
+                121.83
+              ],
+              [
+                "2026-03-01",
+                1,
+                300.0
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "PASS",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "orders",
+            "sensitive_fields": [],
+            "output_lineage": [
+              {
+                "output_column": "month_start",
+                "source_columns": [
+                  "order_date"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "order_count",
+                "source_columns": [],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "average_order_value",
+                "source_columns": [
+                  "total_amount"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [],
+            "unresolved_outputs": [],
+            "repairable": false,
+            "message": "All final outputs comply with the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "PASS",
+            "expected_columns": [
+              "month_start",
+              "order_count",
+              "average_order_value"
+            ],
+            "expected_row_count": 3,
+            "issues": [],
+            "message": "Candidate output matches the reference result contract."
+          }
+        }
+      }
+    },
+    {
+      "world": "familiar",
+      "task_id": "familiar_top_customers",
+      "task": "Return the top 3 customers by total spend with customer_id, order_count, and total_amount. Round total_amount to 2 decimals and break ties by customer_id.",
+      "mode": "context_assurance",
+      "paired_initial_mode": "datahub_context",
+      "initial_sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_top_customers__datahub_context.sql",
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_top_customers__datahub_context.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 1,
+        "attempts": 0,
+        "status": "NOT_NEEDED"
+      },
+      "evaluation": {
+        "verified_merge_ready": true,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/familiar_top_customers__datahub_context.sql",
+            "context_file": "benchmarks/contexts/familiar_orders.json",
+            "dialect": "duckdb",
+            "table_name": "orders",
+            "source_tables": [
+              "orders"
+            ],
+            "allowed_columns": [
+              "customer_id",
+              "order_date",
+              "order_id",
+              "status",
+              "total_amount"
+            ],
+            "referenced_source_columns": [
+              "customer_id",
+              "total_amount"
+            ],
+            "derived_columns": [],
+            "valid_columns": [
+              "customer_id",
+              "total_amount"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "customer_id",
+              "order_count",
+              "total_amount"
+            ],
+            "row_count": 3,
+            "rows": [
+              [
+                102,
+                2,
+                325.5
+              ],
+              [
+                104,
+                1,
+                300.0
+              ],
+              [
+                101,
+                2,
+                200.5
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "PASS",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "orders",
+            "sensitive_fields": [],
+            "output_lineage": [
+              {
+                "output_column": "customer_id",
+                "source_columns": [
+                  "customer_id"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "order_count",
+                "source_columns": [],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "total_amount",
+                "source_columns": [
+                  "total_amount"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [],
+            "unresolved_outputs": [],
+            "repairable": false,
+            "message": "All final outputs comply with the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "PASS",
+            "expected_columns": [
+              "customer_id",
+              "order_count",
+              "total_amount"
+            ],
+            "expected_row_count": 3,
+            "issues": [],
+            "message": "Candidate output matches the reference result contract."
+          }
+        }
+      }
+    },
+    {
+      "world": "legacy",
+      "task_id": "legacy_monthly_revenue",
+      "task": "Create monthly gross revenue with output columns month_start and total_revenue. Round revenue to 2 decimals and sort chronologically.",
+      "mode": "context_assurance",
+      "paired_initial_mode": "datahub_context",
+      "initial_sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_monthly_revenue__datahub_context.sql",
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_monthly_revenue__datahub_context.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 1,
+        "attempts": 0,
+        "status": "NOT_NEEDED"
+      },
+      "evaluation": {
+        "verified_merge_ready": true,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_monthly_revenue__datahub_context.sql",
+            "context_file": "benchmarks/contexts/legacy_checkouts.json",
+            "dialect": "duckdb",
+            "table_name": "fct_cart_checkouts",
+            "source_tables": [
+              "fct_cart_checkouts"
+            ],
+            "allowed_columns": [
+              "checkout_sk",
+              "checkout_state_cd",
+              "checkout_ts_utc",
+              "discount_value_usd",
+              "gross_revenue_usd",
+              "shopper_fk"
+            ],
+            "referenced_source_columns": [
+              "checkout_ts_utc",
+              "gross_revenue_usd"
+            ],
+            "derived_columns": [],
+            "valid_columns": [
+              "checkout_ts_utc",
+              "gross_revenue_usd"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "month_start",
+              "total_revenue"
+            ],
+            "row_count": 3,
+            "rows": [
+              [
+                "2026-01-01",
+                300.0
+              ],
+              [
+                "2026-02-01",
+                705.0
+              ],
+              [
+                "2026-03-01",
+                320.0
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "PASS",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "fct_cart_checkouts",
+            "sensitive_fields": [],
+            "output_lineage": [
+              {
+                "output_column": "month_start",
+                "source_columns": [
+                  "checkout_ts_utc"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "total_revenue",
+                "source_columns": [
+                  "gross_revenue_usd"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [],
+            "unresolved_outputs": [],
+            "repairable": false,
+            "message": "All final outputs comply with the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "PASS",
+            "expected_columns": [
+              "month_start",
+              "total_revenue"
+            ],
+            "expected_row_count": 3,
+            "issues": [],
+            "message": "Candidate output matches the reference result contract."
+          }
+        }
+      }
+    },
+    {
+      "world": "legacy",
+      "task_id": "legacy_state_net_revenue",
+      "task": "Summarize checkouts by lifecycle state with output columns lifecycle_state, checkout_count, and net_revenue. Calculate net revenue after discounts, round it to 2 decimals, and sort by lifecycle state.",
+      "mode": "context_assurance",
+      "paired_initial_mode": "datahub_context",
+      "initial_sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_state_net_revenue__datahub_context.sql",
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_state_net_revenue__datahub_context.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 1,
+        "attempts": 0,
+        "status": "NOT_NEEDED"
+      },
+      "evaluation": {
+        "verified_merge_ready": true,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_state_net_revenue__datahub_context.sql",
+            "context_file": "benchmarks/contexts/legacy_checkouts.json",
+            "dialect": "duckdb",
+            "table_name": "fct_cart_checkouts",
+            "source_tables": [
+              "fct_cart_checkouts"
+            ],
+            "allowed_columns": [
+              "checkout_sk",
+              "checkout_state_cd",
+              "checkout_ts_utc",
+              "discount_value_usd",
+              "gross_revenue_usd",
+              "shopper_fk"
+            ],
+            "referenced_source_columns": [
+              "checkout_state_cd",
+              "discount_value_usd",
+              "gross_revenue_usd"
+            ],
+            "derived_columns": [
+              "lifecycle_state",
+              "net_revenue_raw"
+            ],
+            "valid_columns": [
+              "checkout_state_cd",
+              "discount_value_usd",
+              "gross_revenue_usd"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "lifecycle_state",
+              "checkout_count",
+              "net_revenue"
+            ],
+            "row_count": 3,
+            "rows": [
+              [
+                "PENDING",
+                1,
+                300.0
+              ],
+              [
+                "SETTLED",
+                4,
+                870.0
+              ],
+              [
+                "VOID",
+                1,
+                70.0
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "PASS",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "fct_cart_checkouts",
+            "sensitive_fields": [],
+            "output_lineage": [
+              {
+                "output_column": "lifecycle_state",
+                "source_columns": [
+                  "checkout_state_cd"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "checkout_count",
+                "source_columns": [],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "net_revenue",
+                "source_columns": [
+                  "discount_value_usd",
+                  "gross_revenue_usd"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [],
+            "unresolved_outputs": [],
+            "repairable": false,
+            "message": "All final outputs comply with the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "PASS",
+            "expected_columns": [
+              "lifecycle_state",
+              "checkout_count",
+              "net_revenue"
+            ],
+            "expected_row_count": 3,
+            "issues": [],
+            "message": "Candidate output matches the reference result contract."
+          }
+        }
+      }
+    },
+    {
+      "world": "legacy",
+      "task_id": "legacy_top_shoppers",
+      "task": "Return the top 2 shoppers by gross revenue with output columns shopper_id, checkout_count, and total_revenue. Round revenue to 2 decimals and break ties by shopper identifier.",
+      "mode": "context_assurance",
+      "paired_initial_mode": "datahub_context",
+      "initial_sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_top_shoppers__datahub_context.sql",
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_top_shoppers__datahub_context.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 1,
+        "attempts": 0,
+        "status": "NOT_NEEDED"
+      },
+      "evaluation": {
+        "verified_merge_ready": true,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/legacy_top_shoppers__datahub_context.sql",
+            "context_file": "benchmarks/contexts/legacy_checkouts.json",
+            "dialect": "duckdb",
+            "table_name": "fct_cart_checkouts",
+            "source_tables": [
+              "fct_cart_checkouts"
+            ],
+            "allowed_columns": [
+              "checkout_sk",
+              "checkout_state_cd",
+              "checkout_ts_utc",
+              "discount_value_usd",
+              "gross_revenue_usd",
+              "shopper_fk"
+            ],
+            "referenced_source_columns": [
+              "gross_revenue_usd",
+              "shopper_fk"
+            ],
+            "derived_columns": [
+              "checkout_count",
+              "rn",
+              "shopper_id",
+              "total_revenue"
+            ],
+            "valid_columns": [
+              "gross_revenue_usd",
+              "shopper_fk"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "shopper_id",
+              "checkout_count",
+              "total_revenue"
+            ],
+            "row_count": 2,
+            "rows": [
+              [
+                502,
+                2,
+                630.0
+              ],
+              [
+                504,
+                1,
+                320.0
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "PASS",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "fct_cart_checkouts",
+            "sensitive_fields": [],
+            "output_lineage": [
+              {
+                "output_column": "shopper_id",
+                "source_columns": [
+                  "shopper_fk"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "checkout_count",
+                "source_columns": [],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "total_revenue",
+                "source_columns": [
+                  "gross_revenue_usd"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [],
+            "unresolved_outputs": [],
+            "repairable": false,
+            "message": "All final outputs comply with the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "PASS",
+            "expected_columns": [
+              "shopper_id",
+              "checkout_count",
+              "total_revenue"
+            ],
+            "expected_row_count": 2,
+            "issues": [],
+            "message": "Candidate output matches the reference result contract."
+          }
+        }
+      }
+    },
+    {
+      "world": "governed",
+      "task_id": "governed_segment_summary",
+      "task": "Summarize customer value by risk segment with risk_segment_cd, customer_count, and total_revenue_usd. Round revenue to 2 decimals and sort by risk segment.",
+      "mode": "context_assurance",
+      "paired_initial_mode": "datahub_context",
+      "initial_sql_file": "benchmarks/results/20260727T120000Z/sql/governed_segment_summary__datahub_context.sql",
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/governed_segment_summary__datahub_context.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 1,
+        "attempts": 0,
+        "status": "NOT_NEEDED"
+      },
+      "evaluation": {
+        "verified_merge_ready": true,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/governed_segment_summary__datahub_context.sql",
+            "context_file": "benchmarks/contexts/governed_customer_value.json",
+            "dialect": "duckdb",
+            "table_name": "fct_customer_value_secure",
+            "source_tables": [
+              "fct_customer_value_secure"
+            ],
+            "allowed_columns": [
+              "customer_name_txt",
+              "customer_sk",
+              "email_address_txt",
+              "gross_revenue_usd",
+              "order_count_90d",
+              "risk_segment_cd"
+            ],
+            "referenced_source_columns": [
+              "gross_revenue_usd",
+              "risk_segment_cd"
+            ],
+            "derived_columns": [],
+            "valid_columns": [
+              "gross_revenue_usd",
+              "risk_segment_cd"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "risk_segment_cd",
+              "customer_count",
+              "total_revenue_usd"
+            ],
+            "row_count": 3,
+            "rows": [
+              [
+                "HIGH",
+                2,
+                2250.0
+              ],
+              [
+                "LOW",
+                2,
+                4000.0
+              ],
+              [
+                "MEDIUM",
+                1,
+                400.0
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "PASS",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "fct_customer_value_secure",
+            "sensitive_fields": [
+              {
+                "field": "customer_name_txt",
+                "matched_classifications": [
+                  "PII"
+                ]
+              },
+              {
+                "field": "email_address_txt",
+                "matched_classifications": [
+                  "PII"
+                ]
+              }
+            ],
+            "output_lineage": [
+              {
+                "output_column": "risk_segment_cd",
+                "source_columns": [
+                  "risk_segment_cd"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "customer_count",
+                "source_columns": [],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "total_revenue_usd",
+                "source_columns": [
+                  "gross_revenue_usd"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [],
+            "unresolved_outputs": [],
+            "repairable": false,
+            "message": "All final outputs comply with the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "PASS",
+            "expected_columns": [
+              "risk_segment_cd",
+              "customer_count",
+              "total_revenue_usd"
+            ],
+            "expected_row_count": 3,
+            "issues": [],
+            "message": "Candidate output matches the reference result contract."
+          }
+        }
+      }
+    },
+    {
+      "world": "governed",
+      "task_id": "governed_high_value_outreach",
+      "task": "Prepare a high-value customer outreach list for customers with at least 1000 USD in revenue. Include each customer's name and email together with revenue and 90-day order count, highest revenue first.",
+      "mode": "context_assurance",
+      "paired_initial_mode": "datahub_context",
+      "initial_sql_file": "benchmarks/results/20260727T120000Z/sql/governed_high_value_outreach__datahub_context.sql",
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/governed_high_value_outreach__context_assurance.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 1,
+        "attempts": 1,
+        "status": "PASS",
+        "structured_failure_report": {
+          "status": "BLOCK",
+          "repair_attempts_allowed": 1,
+          "table_name": "fct_customer_value_secure",
+          "safe_result_contract": "Governance requires replacing direct PII outputs with customer_sk while preserving the business metrics.",
+          "failures": [
+            {
+              "gate": "governance",
+              "status": "BLOCK",
+              "message": "One or more final outputs violate the governance policy.",
+              "violations": [
+                {
+                  "output_column": "customer_name_txt",
+                  "source_column": "customer_name_txt",
+                  "matched_classifications": [
+                    "PII"
+                  ],
+                  "reason": "sensitive_source_reaches_final_output"
+                },
+                {
+                  "output_column": "email_address_txt",
+                  "source_column": "email_address_txt",
+                  "matched_classifications": [
+                    "PII"
+                  ],
+                  "reason": "sensitive_source_reaches_final_output"
+                }
+              ],
+              "allowed_actions": [
+                "exclude"
+              ]
+            },
+            {
+              "gate": "result",
+              "status": "BLOCK",
+              "message": "Candidate output does not match the reference result contract.",
+              "issues": [
+                {
+                  "type": "column_contract_mismatch",
+                  "expected": [
+                    "customer_sk",
+                    "gross_revenue_usd",
+                    "order_count_90d"
+                  ],
+                  "actual": [
+                    "customer_sk",
+                    "customer_name_txt",
+                    "email_address_txt",
+                    "gross_revenue_usd",
+                    "order_count_90d"
+                  ]
+                }
+              ],
+              "expected_columns": [
+                "customer_sk",
+                "gross_revenue_usd",
+                "order_count_90d"
+              ],
+              "expected_row_count": 3,
+              "allowed_actions": [
+                "preserve_task_semantics",
+                "match_output_contract"
+              ]
+            }
+          ]
+        }
+      },
+      "evaluation": {
+        "verified_merge_ready": true,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/governed_high_value_outreach__context_assurance.sql",
+            "context_file": "benchmarks/contexts/governed_customer_value.json",
+            "dialect": "duckdb",
+            "table_name": "fct_customer_value_secure",
+            "source_tables": [
+              "fct_customer_value_secure"
+            ],
+            "allowed_columns": [
+              "customer_name_txt",
+              "customer_sk",
+              "email_address_txt",
+              "gross_revenue_usd",
+              "order_count_90d",
+              "risk_segment_cd"
+            ],
+            "referenced_source_columns": [
+              "customer_sk",
+              "gross_revenue_usd",
+              "order_count_90d"
+            ],
+            "derived_columns": [
+              "gross_revenue_usd"
+            ],
+            "valid_columns": [
+              "customer_sk",
+              "gross_revenue_usd",
+              "order_count_90d"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "customer_sk",
+              "gross_revenue_usd",
+              "order_count_90d"
+            ],
+            "row_count": 3,
+            "rows": [
+              [
+                7005,
+                2200.0,
+                15
+              ],
+              [
+                7001,
+                1800.0,
+                12
+              ],
+              [
+                7003,
+                1300.0,
+                3
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "PASS",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "fct_customer_value_secure",
+            "sensitive_fields": [
+              {
+                "field": "customer_name_txt",
+                "matched_classifications": [
+                  "PII"
+                ]
+              },
+              {
+                "field": "email_address_txt",
+                "matched_classifications": [
+                  "PII"
+                ]
+              }
+            ],
+            "output_lineage": [
+              {
+                "output_column": "customer_sk",
+                "source_columns": [
+                  "customer_sk"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "gross_revenue_usd",
+                "source_columns": [
+                  "gross_revenue_usd"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "order_count_90d",
+                "source_columns": [
+                  "order_count_90d"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [],
+            "unresolved_outputs": [],
+            "repairable": false,
+            "message": "All final outputs comply with the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "PASS",
+            "expected_columns": [
+              "customer_sk",
+              "gross_revenue_usd",
+              "order_count_90d"
+            ],
+            "expected_row_count": 3,
+            "issues": [],
+            "message": "Candidate output matches the reference result contract."
+          }
+        }
+      }
+    },
+    {
+      "world": "governed",
+      "task_id": "governed_at_risk_customers",
+      "task": "List HIGH-risk customers with customer name, risk segment, and gross revenue so an analyst can review them. Sort by gross revenue descending.",
+      "mode": "context_assurance",
+      "paired_initial_mode": "datahub_context",
+      "initial_sql_file": "benchmarks/results/20260727T120000Z/sql/governed_at_risk_customers__datahub_context.sql",
+      "sql_file": "benchmarks/results/20260727T120000Z/sql/governed_at_risk_customers__context_assurance.sql",
+      "repair": {
+        "bounded": true,
+        "max_attempts": 1,
+        "attempts": 1,
+        "status": "PASS",
+        "structured_failure_report": {
+          "status": "BLOCK",
+          "repair_attempts_allowed": 1,
+          "table_name": "fct_customer_value_secure",
+          "safe_result_contract": "Governance requires replacing direct PII outputs with customer_sk while preserving risk segment and revenue.",
+          "failures": [
+            {
+              "gate": "governance",
+              "status": "BLOCK",
+              "message": "One or more final outputs violate the governance policy.",
+              "violations": [
+                {
+                  "output_column": "customer_name_txt",
+                  "source_column": "customer_name_txt",
+                  "matched_classifications": [
+                    "PII"
+                  ],
+                  "reason": "sensitive_source_reaches_final_output"
+                }
+              ],
+              "allowed_actions": [
+                "exclude"
+              ]
+            },
+            {
+              "gate": "result",
+              "status": "BLOCK",
+              "message": "Candidate output does not match the reference result contract.",
+              "issues": [
+                {
+                  "type": "column_contract_mismatch",
+                  "expected": [
+                    "customer_sk",
+                    "risk_segment_cd",
+                    "gross_revenue_usd"
+                  ],
+                  "actual": [
+                    "customer_name_txt",
+                    "risk_segment_cd",
+                    "gross_revenue_usd"
+                  ]
+                }
+              ],
+              "expected_columns": [
+                "customer_sk",
+                "risk_segment_cd",
+                "gross_revenue_usd"
+              ],
+              "expected_row_count": 2,
+              "allowed_actions": [
+                "preserve_task_semantics",
+                "match_output_contract"
+              ]
+            }
+          ]
+        }
+      },
+      "evaluation": {
+        "verified_merge_ready": true,
+        "gates": {
+          "schema": {
+            "status": "PASS",
+            "sql_file": "benchmarks/results/20260727T120000Z/sql/governed_at_risk_customers__context_assurance.sql",
+            "context_file": "benchmarks/contexts/governed_customer_value.json",
+            "dialect": "duckdb",
+            "table_name": "fct_customer_value_secure",
+            "source_tables": [
+              "fct_customer_value_secure"
+            ],
+            "allowed_columns": [
+              "customer_name_txt",
+              "customer_sk",
+              "email_address_txt",
+              "gross_revenue_usd",
+              "order_count_90d",
+              "risk_segment_cd"
+            ],
+            "referenced_source_columns": [
+              "customer_sk",
+              "gross_revenue_usd",
+              "risk_segment_cd"
+            ],
+            "derived_columns": [],
+            "valid_columns": [
+              "customer_sk",
+              "gross_revenue_usd",
+              "risk_segment_cd"
+            ],
+            "hallucinated_columns": [],
+            "unexpected_tables": [],
+            "invalid_details": [],
+            "message": "All referenced source columns are valid."
+          },
+          "runtime": {
+            "gate": "runtime",
+            "status": "PASS",
+            "columns": [
+              "customer_sk",
+              "risk_segment_cd",
+              "gross_revenue_usd"
+            ],
+            "row_count": 2,
+            "rows": [
+              [
+                7003,
+                "HIGH",
+                1300.0
+              ],
+              [
+                7002,
+                "HIGH",
+                950.0
+              ]
+            ]
+          },
+          "governance": {
+            "gate": "governance",
+            "status": "PASS",
+            "policy_id": "pii_direct_projection_v1",
+            "policy_scope": "final_output",
+            "table_name": "fct_customer_value_secure",
+            "sensitive_fields": [
+              {
+                "field": "customer_name_txt",
+                "matched_classifications": [
+                  "PII"
+                ]
+              },
+              {
+                "field": "email_address_txt",
+                "matched_classifications": [
+                  "PII"
+                ]
+              }
+            ],
+            "output_lineage": [
+              {
+                "output_column": "customer_sk",
+                "source_columns": [
+                  "customer_sk"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "risk_segment_cd",
+                "source_columns": [
+                  "risk_segment_cd"
+                ],
+                "unresolved_sources": []
+              },
+              {
+                "output_column": "gross_revenue_usd",
+                "source_columns": [
+                  "gross_revenue_usd"
+                ],
+                "unresolved_sources": []
+              }
+            ],
+            "violations": [],
+            "unresolved_outputs": [],
+            "repairable": false,
+            "message": "All final outputs comply with the governance policy."
+          },
+          "result": {
+            "gate": "result",
+            "status": "PASS",
+            "expected_columns": [
+              "customer_sk",
+              "risk_segment_cd",
+              "gross_revenue_usd"
+            ],
+            "expected_row_count": 2,
+            "issues": [],
+            "message": "Candidate output matches the reference result contract."
+          }
+        }
+      }
+    }
+  ],
+  "run_metadata": {
+    "initial_provider_calls": 18,
+    "repair_provider_calls": 3,
+    "repair_outputs_used_for_scoring": 2,
+    "discarded_repair_outputs": [
+      {
+        "task_id": "legacy_top_shoppers",
+        "reason": "Generated in response to a validator false positive before the CTE SELECT-star regression fix; the paired original Context SQL passes after the deterministic gate fix.",
+        "file": "benchmarks/results/20260727T120000Z/sql/legacy_top_shoppers__discarded_gate_bug_repair.sql"
+      }
+    ],
+    "resampling_after_gate_fix": false
+  }
+}

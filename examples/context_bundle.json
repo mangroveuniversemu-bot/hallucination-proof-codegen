@@ -12,7 +12,10 @@
       "fieldPath": "first_name",
       "nativeDataType": "VARCHAR",
       "description": "Customer's first name. PII.",
-      "nullable": false
+      "nullable": false,
+      "editedTags": [
+        "PII"
+      ]
     },
     {
       "fieldPath": "first_order",
@@ -24,7 +27,10 @@
       "fieldPath": "last_name",
       "nativeDataType": "VARCHAR",
       "description": "Customer's last name. PII.",
-      "nullable": false
+      "nullable": false,
+      "editedTags": [
+        "PII"
+      ]
     },
     {
       "fieldPath": "most_recent_order",
@@ -48,5 +54,97 @@
     "stg_customers",
     "stg_orders",
     "stg_payments"
-  ]
+  ],
+  "downstream_assets": [
+    {
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.analytics.churn_feature_table,PROD)",
+      "name": "churn_feature_table",
+      "type": "DATASET",
+      "platform": "dbt",
+      "degree": 1,
+      "criticality": "HIGH",
+      "classifications": [
+        "urn:li:tag:CRITICALITY_HIGH",
+        "CRITICALITY_HIGH"
+      ],
+      "is_representation": false,
+      "lineage_path": [
+        {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.main.customers,PROD)",
+          "type": "DATASET"
+        },
+        {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.analytics.churn_feature_table,PROD)",
+          "type": "DATASET"
+        }
+      ]
+    },
+    {
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.analytics.customer_value_dashboard,PROD)",
+      "name": "customer_value_dashboard",
+      "type": "DATASET",
+      "platform": "dbt",
+      "degree": 1,
+      "criticality": "LOW",
+      "classifications": [
+        "urn:li:tag:CRITICALITY_LOW",
+        "CRITICALITY_LOW"
+      ],
+      "is_representation": false,
+      "lineage_path": [
+        {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.main.customers,PROD)",
+          "type": "DATASET"
+        },
+        {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.analytics.customer_value_dashboard,PROD)",
+          "type": "DATASET"
+        }
+      ]
+    },
+    {
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.analytics.monthly_revenue_report,PROD)",
+      "name": "monthly_revenue_report",
+      "type": "DATASET",
+      "platform": "dbt",
+      "degree": 1,
+      "criticality": "MEDIUM",
+      "classifications": [
+        "urn:li:tag:CRITICALITY_MEDIUM",
+        "CRITICALITY_MEDIUM"
+      ],
+      "is_representation": false,
+      "lineage_path": [
+        {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.main.customers,PROD)",
+          "type": "DATASET"
+        },
+        {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.analytics.monthly_revenue_report,PROD)",
+          "type": "DATASET"
+        }
+      ]
+    },
+    {
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,jaffle_shop.main.customers,PROD)",
+      "name": "jaffle_shop.main.customers",
+      "type": "DATASET",
+      "platform": "duckdb",
+      "degree": 1,
+      "criticality": null,
+      "classifications": [],
+      "is_representation": true,
+      "lineage_path": [
+        {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,jaffle_shop.main.customers,PROD)",
+          "type": "DATASET"
+        },
+        {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,jaffle_shop.main.customers,PROD)",
+          "type": "DATASET"
+        }
+      ]
+    }
+  ],
+  "lineage_max_hops": 3
 }

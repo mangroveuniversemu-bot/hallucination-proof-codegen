@@ -1,0 +1,14 @@
+{
+  "table_name": "fct_cart_checkouts",
+  "urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,benchmark.legacy.fct_cart_checkouts,PROD)",
+  "fields": [
+    {"fieldPath": "checkout_sk", "nativeDataType": "BIGINT", "nullable": false, "description": "Surrogate checkout key."},
+    {"fieldPath": "shopper_fk", "nativeDataType": "BIGINT", "nullable": false, "description": "Legacy shopper foreign key."},
+    {"fieldPath": "checkout_ts_utc", "nativeDataType": "TIMESTAMP", "nullable": false, "description": "Checkout timestamp in UTC."},
+    {"fieldPath": "gross_revenue_usd", "nativeDataType": "DECIMAL(12,2)", "nullable": false, "description": "Gross checkout revenue in USD."},
+    {"fieldPath": "discount_value_usd", "nativeDataType": "DECIMAL(12,2)", "nullable": false, "description": "Discount applied in USD."},
+    {"fieldPath": "checkout_state_cd", "nativeDataType": "VARCHAR", "nullable": false, "description": "Legacy checkout state code."}
+  ],
+  "upstream_tables": [],
+  "downstream_assets": []
+}
