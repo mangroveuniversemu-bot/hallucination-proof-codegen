@@ -11,7 +11,8 @@ the table name, which makes schema hallucinations directly observable.
 hallucination-proof-codegen/
 ├── src/
 │   ├── context_builder.py
-│   └── codegen.py
+│   ├── codegen.py
+│   └── validator.py
 ├── examples/
 │   ├── context_bundle.json
 │   ├── output_blind.sql
@@ -95,6 +96,22 @@ python src/codegen.py --blind "Describe your SQL task"
 
 Outputs are written to `examples/output_grounded.sql` and
 `examples/output_blind.sql` respectively.
+
+## Validate generated SQL
+
+The validator uses SQLGlot scopes to distinguish physical source columns from
+valid CTE and select aliases. It also inspects column references inside window
+functions such as `NTILE(...) OVER (ORDER BY ...)`.
+
+```powershell
+python src/validator.py examples/output_grounded.sql
+python src/validator.py examples/output_blind.sql
+```
+
+Results are emitted as structured JSON. A valid query returns process exit code
+`0`; detected hallucinations return `1`; parsing or configuration errors return
+`2`. With the checked-in examples, the grounded SQL passes and the blind SQL
+fails because `clv` is absent from the DataHub schema.
 
 ## License
 

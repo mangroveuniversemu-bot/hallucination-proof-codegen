@@ -4,3 +4,4 @@ mcp>=1.28.1
 mcp-server-datahub>=0.6.0
 openai>=2.48.0
 python-dotenv>=1.2.2
+sqlglot>=30.12.0
