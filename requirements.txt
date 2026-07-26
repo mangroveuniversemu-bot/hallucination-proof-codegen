@@ -1,4 +1,5 @@
 certifi>=2026.2.25
+acryl-datahub>=1.6.0.15
 httpx>=0.28.1
 mcp>=1.28.1
 mcp-server-datahub>=0.6.0
