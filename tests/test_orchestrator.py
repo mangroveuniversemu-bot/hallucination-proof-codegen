@@ -52,7 +52,7 @@ class OrchestratorTests(unittest.TestCase):
             artifact = run_dir / "sql" / "candidate.sql"
             artifact.parent.mkdir()
             artifact.write_text("select 1\n", encoding="utf-8")
-            seal_run(
+            manifest = seal_run(
                 run_dir=run_dir,
                 run_id="test-run",
                 created_at="2026-01-01T00:00:00+00:00",
@@ -63,6 +63,11 @@ class OrchestratorTests(unittest.TestCase):
                 grounded_prompt_sha256=sha256_bytes(b"grounded"),
                 status="PASS",
             )
+            self.assertEqual(manifest["manifest_version"], 2)
+            self.assertTrue(manifest["sealed"])
+            self.assertTrue(manifest["tamper_evident"])
+            self.assertTrue(manifest["write_once_run_id"])
+            self.assertNotIn("immutable", manifest)
             self.assertEqual(verify_run(run_dir)["status"], "PASS")
 
             artifact.chmod(stat.S_IWRITE | stat.S_IREAD)

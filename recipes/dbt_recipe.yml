@@ -1,0 +1,13 @@
+source:
+  type: dbt
+  config:
+    manifest_path: "${DBT_PROJECT_ROOT}/target/manifest.json"
+    catalog_path: "${DBT_PROJECT_ROOT}/target/catalog.json"
+    run_results_paths:
+      - "${DBT_PROJECT_ROOT}/target/run_results.json"
+    target_platform: duckdb
+
+sink:
+  type: datahub-rest
+  config:
+    server: "${DATAHUB_GMS_URL}"

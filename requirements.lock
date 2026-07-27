@@ -190,6 +190,17 @@ beartype==0.22.9 \
     --hash=sha256:8f82b54aa723a2848a56008d18875f91c1db02c32ef6a62319a002e3e25a975f \
     --hash=sha256:d16c9bbc61ea14637596c5f6fbff2ee99cbe3573e46a716401734ef50c3060c2
     # via py-key-value-aio
+boto3==1.43.56 \
+    --hash=sha256:57c90df9fb026f2e6ae22530861198130203733c5c9ec4e5cca3a4037f5a8db4 \
+    --hash=sha256:feb699d4ab241ef5c1b80bb58277be2aaad365cd4b672d7817e0bc59ee45131b
+    # via acryl-datahub
+botocore==1.43.56 \
+    --hash=sha256:6c01f85f0ff9863076f4c761e74ee3aa96c5ccc1ad09fc1efd62ef8f2d22bf57 \
+    --hash=sha256:aafc741f1b10f6fd63253eaf6ea029680c1ff436d87e1b8969d62aefa0c76976
+    # via
+    #   acryl-datahub
+    #   boto3
+    #   s3transfer
 cached-property==2.0.1 \
     --hash=sha256:484d617105e3ee0e4f1f58725e72a8ef9e93deee462222dbd51cd91230897641 \
     --hash=sha256:f617d70ab1100b7bcf6e42228f9ddcb78c676ffa167278d9f730d1c2fba69ccb
@@ -1176,7 +1187,10 @@ jiter==0.16.0 \
 jmespath==1.0.1 \
     --hash=sha256:02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980 \
     --hash=sha256:90261b206d6defd58fdd5e85f478bf633a2901798906be2ad389150c5c60edbe
-    # via mcp-server-datahub
+    # via
+    #   boto3
+    #   botocore
+    #   mcp-server-datahub
 joserfc==1.7.4 \
     --hash=sha256:32d46c2cd5e3203c13e87a6c61333cab310b1ba80cd54b4c4f386a848a122463 \
     --hash=sha256:b3bc561672ae541b17a9237053b48a03dacddd92d68047b3ecdfb4b5714a88ed
@@ -1237,10 +1251,11 @@ mixpanel==5.0.0 \
     --hash=sha256:5c5fee75a304bd2940828a08a31f74fae7f02d5fe81914a851ed87e8884096ec \
     --hash=sha256:ef78b7b36150fbf24796972bf44871515c6d1381a69be683eb26a65d44b84bb5
     # via acryl-datahub
-more-itertools==11.1.0 \
-    --hash=sha256:48e8f4d9e7e5878571ecf6f2b4e57634f93cd474cc8cfbd2376f2d11b396e30d \
-    --hash=sha256:4b65538ae22f6fed0ce4874efd317463a7489796a0939fa66824dd542125a192
+more-itertools==10.8.0 \
+    --hash=sha256:52d4362373dcf7c52546bc4af9a86ee7c4579df9a8dc268be0a2f949d376cc9b \
+    --hash=sha256:f638ddf8a1a0d134181275fb5d58b086ead7c6a72429ad725c67503f13ba30bd
     # via
+    #   acryl-datahub
     #   jaraco-classes
     #   jaraco-functools
 multidict==6.7.1 \
@@ -1415,6 +1430,10 @@ packaging==26.2 \
     # via
     #   acryl-datahub
     #   fastmcp-slim
+patchy==2.8.0 \
+    --hash=sha256:0b7837f90f9729361a2a8ae7daef3a42bb81a8346d27945c125e312c3fe0fd05 \
+    --hash=sha256:ae7fbcdde436272fb32485e4392c2b3cd2d0c1ac91b0af76b41242e92ff084ec
+    # via acryl-datahub
 pathable==0.6.0 \
     --hash=sha256:6404b8b82aef5ff0fd478934137128b99b12212ba35afdde5525ca4f8388ea58 \
     --hash=sha256:82c4ca6c98c502ad12e0d4e9779b6210afee93c38990988c8c5d1b49bdcdf566
@@ -1748,7 +1767,9 @@ pyreadline3==3.5.6 ; sys_platform == 'win32' \
 python-dateutil==2.9.0.post0 \
     --hash=sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3 \
     --hash=sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427
-    # via acryl-datahub
+    # via
+    #   acryl-datahub
+    #   botocore
 python-dotenv==1.2.2 \
     --hash=sha256:1d8214789a24de455a8b8bd8ae6fe3c6b69a5e3d64aa8a8e5d68e694bbcb285a \
     --hash=sha256:2c371a91fbd7ba082c2c1dc1f8bf89ca22564a087c2c287cd9b662adde799cf3
@@ -1892,6 +1913,7 @@ requests==2.34.2 \
     --hash=sha256:2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0 \
     --hash=sha256:f288924cae4e29463698d6d60bc6a4da69c89185ad1e0bcc4104f584e960b9ed
     # via
+    #   acryl-datahub
     #   docker
     #   mixpanel
     #   requests-file
@@ -2034,6 +2056,10 @@ ruamel-yaml==0.19.1 \
     --hash=sha256:27592957fedf6e0b62f281e96effd28043345e0e66001f97683aa9a40c667c93 \
     --hash=sha256:53eb66cd27849eff968ebf8f0bf61f46cdac2da1d1f3576dd4ccee9b25c31993
     # via acryl-datahub
+s3transfer==0.19.2 \
+    --hash=sha256:ba0309fd86be3c27dbf78cdd813c13c5e1df16e5874b99d2535ebbdfb9892993 \
+    --hash=sha256:d8168eccca828cbb2cd573675333f3bddd254313a9c42494b84c76b539e8ba25
+    # via boto3
 secretstorage==3.5.0 ; sys_platform == 'linux' \
     --hash=sha256:0ce65888c0725fcb2c5bc0fdb8e5438eece02c523557ea40ce0703c266248137 \
     --hash=sha256:f04b8e4689cbce351744d5537bf6b1329c6fc68f91fa666f60a380edddcd11be
@@ -2062,10 +2088,36 @@ sortedcontainers==2.4.0 \
     --hash=sha256:25caa5a06cc30b6b83d11423433f65d1f9d76c4c6a0c90e3379eaa43b9bfdb88 \
     --hash=sha256:a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0
     # via fakeredis
-sqlglot==30.13.0 \
-    --hash=sha256:08f87ff7b052246d61b731628c8c2db0bc91f2c9e69f5ba68a1d160a9f5b49b1 \
-    --hash=sha256:f0a6eb79de2fd6efe2689f8cf197caa4f08bfe77c7880315616fa4420b8ba2bf
-    # via -r requirements.txt
+sqlglot==30.12.0 \
+    --hash=sha256:6b8369704662d4f654bc934cea4dd31c916c2a571b389210cb9e951a275e5fd9 \
+    --hash=sha256:86cccc610073c645c03e72b55b60ae0518aa3253a7fc3bd56551370d003c6554
+    # via
+    #   -r requirements.txt
+    #   acryl-datahub
+    #   sqlglotc
+sqlglotc==30.12.0 \
+    --hash=sha256:05f0cf61aba3207aa8d9fe10646168eac01595f521f3d81390ba215a15e8f6b7 \
+    --hash=sha256:0756aff3d6617d8587027981b15a57b27a698f3082ed7d333d313fed0e59de5d \
+    --hash=sha256:1075dbee8fde16aa372ac42a63941cde50d533e57bbe0a34ddc6ab8c328dbf45 \
+    --hash=sha256:1153b757420fc712163bb8da12a14f2603bcd6cdd40b0aedd526e16c68f56b9c \
+    --hash=sha256:1e5ad6689bf76f226e4a3182f3819e9e4056ea0d2b7c1fd610dad22e065b7a10 \
+    --hash=sha256:1ede716d4bc7bda5558354deb545dda7400ae475c543af08bbb46fc2bab99aae \
+    --hash=sha256:2b7454ebbd97d3a197d946fa352ce64f58d6bdacac27883929fd9d45900618f8 \
+    --hash=sha256:30fe29c8287dc681b8e6c1514c4138861230314ebe86a47081cf4d1141dd2f89 \
+    --hash=sha256:4588ea73e99ec2f106cd688e6c12199b99c509497ec16fa858b645f748f461d0 \
+    --hash=sha256:4c4016010ecf0b3473f0b2004f9bf352b9c694644a18867e290cf1ddfcd994a1 \
+    --hash=sha256:4cdb2e5f7416daaa5f3046cc790e2ab31ddbde930443ecfe548cfd1e5f9552e7 \
+    --hash=sha256:671d7fcb7261b297c014f7cdc54703e28d3de6e58e94a5652beb5a661a3d0786 \
+    --hash=sha256:71784e43ef4af200a3e8e04f42b9977f405cfeee025c7dbeb703b862029b2b3f \
+    --hash=sha256:7c4c9c7d76026b75f64a6682faf84cf5145e3304190c07807b86962d8d535f74 \
+    --hash=sha256:8412ddb9bb2e3832e36a9d2c279a2c64ffa0d695295f2daae72cef4f68114cb0 \
+    --hash=sha256:a84dd9d7565b782bef07e577b3400cdcddc81ffaae963d5e8460e431c4e70e27 \
+    --hash=sha256:bb8836127f5233606bc63c2f56dc529e5ee9c96b1e317f434c65d90984fcdad1 \
+    --hash=sha256:cad61b20aa2e8ed01efca83d6fa475d14214bcb1caba5eb11ab3b5b6fdd50ba5 \
+    --hash=sha256:d998e3b5eddf5db65573009f86cb6a0378efb7e1780d19a6357bce67afb05f0d \
+    --hash=sha256:ddad6b33e98f040aa2493e6187e83235c57a4d52ba573a2f94c32d9209b3e7e0 \
+    --hash=sha256:efcf65f06d5de8b594cb7bda5dbc2e2b29e06eaef1d90044778751fed455b1dd
+    # via sqlglot
 sse-starlette==3.4.6 \
     --hash=sha256:56217ab4c9a9f9c5db7b21e08732d3e7c2b807f45231ad23de0551a24c4a41f6 \
     --hash=sha256:725f8a1bd6d26ae1b2c9610c0ef5065dfdd496f3988d28adcf8c4b49dc25c627
@@ -2130,6 +2182,8 @@ urllib3==2.7.0 \
     --hash=sha256:231e0ec3b63ceb14667c67be60f2f2c40a518cb38b03af60abc813da26505f4c \
     --hash=sha256:9fb4c81ebbb1ce9531cce37674bbc6f1360472bc18ca9a553ede278ef7276897
     # via
+    #   acryl-datahub
+    #   botocore
     #   docker
     #   requests
     #   sentry-sdk

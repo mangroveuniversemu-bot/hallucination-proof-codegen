@@ -343,8 +343,10 @@ def seal_run(
 ) -> dict[str, Any]:
     lock_path = PROJECT_ROOT / "requirements.lock"
     manifest_base: dict[str, Any] = {
-        "manifest_version": 1,
-        "immutable": True,
+        "manifest_version": 2,
+        "sealed": True,
+        "tamper_evident": True,
+        "write_once_run_id": True,
         "run_id": run_id,
         "created_at_utc": created_at,
         "status": status,
@@ -452,7 +454,7 @@ def run(args: argparse.Namespace) -> tuple[dict[str, Any], Path]:
     git = git_snapshot()
     if args.require_clean_git and git["dirty"]:
         raise OrchestratorError(
-            "Git worktree is dirty; commit the implementation before creating an immutable demo run"
+            "Git worktree is dirty; commit the implementation before creating a sealed demo run"
         )
     final_run_dir = args.runs_root / run_id
     if final_run_dir.exists():
@@ -561,7 +563,7 @@ def run(args: argparse.Namespace) -> tuple[dict[str, Any], Path]:
                 urn=context["urn"],
                 task=task,
                 note=(
-                    f"Immutable assurance run {run_id}: schema, runtime, NULL/result, "
+                    f"Sealed assurance run {run_id}: schema, runtime, NULL/result, "
                     f"and governance gates passed after {repair['attempts']} repair attempt(s)."
                 ),
                 evidence_url=evidence_url,

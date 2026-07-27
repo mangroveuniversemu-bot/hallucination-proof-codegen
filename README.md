@@ -1,5 +1,7 @@
 # Hallucination-Proof SQL Codegen
 
+[![CI](https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen/actions/workflows/ci.yml)
+
 **SQL that runs is not necessarily SQL that should be merged.**
 
 This project turns DataHub metadata into a change-admission control plane for
@@ -21,10 +23,29 @@ This is more than a metadata-aware code generator:
 - Downstream criticality converts lineage into `AUTO_PR`, `REVIEW_REQUIRED`,
   or `BLOCK_AUTO_MERGE`.
 - Repair is bounded to one attempt. Provider failure or a second gate failure
-fails closed instead of starting an agent loop.
+  fails closed instead of starting an agent loop.
 
 The repository name describes the design goal, not a claim that hallucinations
 have been eliminated. Evidence is reported as gate outcomes on named tasks.
+
+## Three-minute demo path
+
+This is the primary judging path; downstream impact and the benchmark are
+supporting evidence, not additional steps in the live demo.
+
+```text
+Blind SQL
+  -> schema/runtime failure
+Grounded SQL
+  -> schema PASS -> runtime PASS -> result/NULL PASS
+  -> PII governance FAIL
+  -> one structured repair
+  -> all four gates PASS
+  -> evidence written back to DataHub
+```
+
+The memorable distinction is deliberate: **SQL can run and still be unsafe to
+merge.**
 
 ## Three controlled proofs
 
@@ -165,7 +186,7 @@ flowchart LR
     H -->|"FAIL"| I
     I --> J["GLM repair<br/>maximum one attempt"]
     J --> E
-    H -->|"PASS"| K["Immutable evidence manifest"]
+    H -->|"PASS"| K["Sealed, tamper-evident manifest"]
     K --> L["DataHub write-back"]
 ```
 
@@ -215,8 +236,10 @@ directories appear under `runs/<run-id>`.
 
 ### Recorded fair run
 
-Run [`20260726T182727Z-cbad85e7`](runs/20260726T182727Z-cbad85e7/) was generated
-once from clean source commit `39acb2d` and was not selectively resampled.
+Run `20260726T182727Z-cbad85e7` was generated once from clean source commit
+`39acb2d` and was not selectively resampled. Its canonical public snapshot is
+[pinned to evidence commit `40c2b686`](https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen/tree/40c2b6861c7f145fba8506b87fb08be8ec61abe6/runs/20260726T182727Z-cbad85e7),
+so later changes to `main` cannot change what reviewers inspect.
 
 | Candidate | Schema | Runtime | Result / NULL | Governance |
 | --- | --- | --- | --- | --- |
@@ -228,15 +251,15 @@ The repair report allowed only `exclude`; GLM removed the two name projections
 without changing the segmentation. DataHub write-back then returned `SUCCESS`
 and read the evidence entry back while preserving the dataset description.
 
-Evidence:
+Commit-pinned evidence:
 
-- [Blind SQL](runs/20260726T182727Z-cbad85e7/sql/blind.sql)
-- [Grounded initial SQL](runs/20260726T182727Z-cbad85e7/sql/grounded_initial.sql)
-- [Once-repaired SQL](runs/20260726T182727Z-cbad85e7/sql/repaired.sql)
-- [All gate results and structured repair report](runs/20260726T182727Z-cbad85e7/gate_report.json)
-- [Sealed manifest](runs/20260726T182727Z-cbad85e7/manifest.json), SHA-256
+- [Blind SQL](https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen/blob/40c2b6861c7f145fba8506b87fb08be8ec61abe6/runs/20260726T182727Z-cbad85e7/sql/blind.sql)
+- [Grounded initial SQL](https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen/blob/40c2b6861c7f145fba8506b87fb08be8ec61abe6/runs/20260726T182727Z-cbad85e7/sql/grounded_initial.sql)
+- [Once-repaired SQL](https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen/blob/40c2b6861c7f145fba8506b87fb08be8ec61abe6/runs/20260726T182727Z-cbad85e7/sql/repaired.sql)
+- [All gate results and structured repair report](https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen/blob/40c2b6861c7f145fba8506b87fb08be8ec61abe6/runs/20260726T182727Z-cbad85e7/gate_report.json)
+- [Sealed manifest](https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen/blob/40c2b6861c7f145fba8506b87fb08be8ec61abe6/runs/20260726T182727Z-cbad85e7/manifest.json), SHA-256
   `ae1e963722bfaa224fc71185998ed085e90de57767922d7079eabc797294ec1b`
-- [Verified DataHub write-back receipt](runs/20260726T182727Z-cbad85e7/writeback_receipt.json)
+- [Verified DataHub write-back receipt](https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen/blob/40c2b6861c7f145fba8506b87fb08be8ec61abe6/runs/20260726T182727Z-cbad85e7/writeback_receipt.json)
 
 The result contract also catches metadata drift: the checked-in DataHub schema
 reports `customer_lifetime_value` as non-nullable, while the real DuckDB table
@@ -270,7 +293,7 @@ flowchart LR
    output and NULL-default contract.
 7. `orchestrator.py` performs the fair paired generation, evaluates schema,
    runtime, result quality, and governance, permits one structured repair, and
-   seals an immutable evidence run.
+   seals a tamper-evident evidence run.
 8. `admission_controller.py` converts a schema/governance failure to JSON,
    sends that JSON and the original SQL to GLM once, re-runs both gates, then
    applies downstream impact admission.
@@ -320,6 +343,13 @@ equivalence.
 python -m unittest discover -s tests -v
 ```
 
+The workflow is not aspirational: [CI run 30215005110](https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen/actions/runs/30215005110)
+completed successfully for evidence commit `40c2b686` on both
+[Ubuntu / Python 3.12](https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen/actions/runs/30215005110/job/89827625269)
+and [Windows / Python 3.12](https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen/actions/runs/30215005110/job/89827625319).
+Both jobs installed `requirements.lock` with `--require-hashes`, compiled the
+source, and ran the full test suite.
+
 CLI exit codes are automation-ready:
 
 | Result | Exit code |
@@ -328,6 +358,14 @@ CLI exit codes are automation-ready:
 | Policy block / `BLOCK_AUTO_MERGE` | `1` |
 | Configuration or execution error | `2` |
 | `REVIEW_REQUIRED` | `3` |
+
+## Upstream DataHub contribution
+
+Development exposed a real continuation bug in MCP schema pagination. The
+fix is published upstream as
+[acryldata/mcp-server-datahub#146](https://github.com/acryldata/mcp-server-datahub/pull/146):
+**Fix `list_schema_fields` pagination continuation semantics**. The draft PR is
+open and mergeable, and includes the regression coverage used by this project.
 
 ## Closed-loop DataHub evidence
 
@@ -374,6 +412,11 @@ hallucination-proof-codegen/
 |   `-- result_contract.json
 |-- runs/
 |   `-- <sealed-run-id>/
+|-- scripts/
+|   |-- bootstrap_demo.ps1
+|   `-- bootstrap_demo.sh
+|-- recipes/
+|   `-- dbt_recipe.yml
 |-- examples/
 |   |-- context_bundle.json
 |   |-- output_pii_candidate.sql
@@ -391,6 +434,45 @@ hallucination-proof-codegen/
 The dbt Labs test project is intentionally not vendored into this repository.
 
 ## Quick start
+
+### Recommended: one-command bootstrap
+
+Prerequisites are Git, Docker, and Python 3.12+. The script creates separate virtual
+environments for the assurance project and the external dbt project, starts
+DataHub OSS Quickstart when requested, builds dbt artifacts, ingests them, and
+applies then reads back the PII metadata. It pins the external dataset to the
+exact evidence commit `36bde6cba69d962b83be1d52fc65a0dce1cb4ebb` and refuses
+to silently reuse a different checkout.
+
+Windows PowerShell:
+
+```powershell
+.\scripts\bootstrap_demo.ps1 -StartDataHub
+```
+
+Linux or macOS:
+
+```bash
+chmod +x scripts/bootstrap_demo.sh
+./scripts/bootstrap_demo.sh --start-datahub
+```
+
+If DataHub is already running, omit `-StartDataHub` / `--start-datahub`. Add
+`-IncludeImpactDemo` / `--include-impact` only when you also want the optional
+LOW/MEDIUM/HIGH downstream graph. The bootstrap intentionally does not call
+GLM or write generation evidence; add `NVIDIA_API_KEY` to `.env`, review the
+task, then run:
+
+```bash
+python src/orchestrator.py run --require-clean-git
+```
+
+Use `--writeback` only when you intentionally want the passing decision added
+to DataHub. The bootstrap follows DataHub's official
+[OSS Quickstart](https://docs.datahub.com/) and
+[dbt ingestion workflow](https://docs.datahub.com/docs/generated/ingestion/sources/dbt).
+
+The equivalent manual setup is below.
 
 ### 1. Install
 
@@ -410,12 +492,22 @@ Set `NVIDIA_API_KEY` in `.env`. Never commit `.env`.
 ```powershell
 git clone https://github.com/dbt-labs/jaffle_shop_duckdb.git ..\jaffle_shop_duckdb
 Push-Location ..\jaffle_shop_duckdb
-dbt build
-dbt docs generate
+git checkout --detach 36bde6cba69d962b83be1d52fc65a0dce1cb4ebb
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\dbt.exe build
+.\.venv\Scripts\dbt.exe docs generate
 Pop-Location
+$env:DBT_PROJECT_ROOT = (Resolve-Path ..\jaffle_shop_duckdb).Path
+$env:DATAHUB_GMS_URL = "http://localhost:8080"
+datahub ingest run -c .\recipes\dbt_recipe.yml
 ```
 
-Ingest the DuckDB and dbt artifacts into a local DataHub instance.
+The bootstrap uses the evidence-pinned dbt revision; newer upstream revisions
+may change their Python requirement. Ingest the generated artifacts using
+[`recipes/dbt_recipe.yml`](recipes/dbt_recipe.yml), with
+`DBT_PROJECT_ROOT` pointing to that checkout and `DATAHUB_GMS_URL` pointing to
+your local instance.
 
 ### 3. Build authoritative context
 
