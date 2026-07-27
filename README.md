@@ -364,13 +364,16 @@ CLI exit codes are automation-ready:
 Development exposed a real continuation bug in MCP schema pagination. The
 fix is published upstream as
 [acryldata/mcp-server-datahub#146](https://github.com/acryldata/mcp-server-datahub/pull/146):
-**Fix `list_schema_fields` pagination continuation semantics**. The draft PR is
-open and mergeable, and includes the regression coverage used by this project.
+**Fix `list_schema_fields` pagination continuation semantics**. The PR is open,
+ready for review, and mergeable, and includes the regression coverage used by
+this project.
 
 ## Closed-loop DataHub evidence
 
 The UI confirms both field-level PII tags and agent evidence links while the
-original dbt description remains intact.
+original dbt description remains intact. A second institutional-memory entry
+preserves the original mutable link for audit history while adding the
+[canonical commit-pinned run](https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen/tree/40c2b6861c7f145fba8506b87fb08be8ec61abe6/runs/20260726T182727Z-cbad85e7).
 
 ![DataHub customers showing PII field tags and write-back evidence](examples/writeback_ui_evidence.png)
 
@@ -419,6 +422,7 @@ hallucination-proof-codegen/
 |   `-- dbt_recipe.yml
 |-- examples/
 |   |-- context_bundle.json
+|   |-- bootstrap_smoke_test_20260727.log
 |   |-- output_pii_candidate.sql
 |   |-- output_agent_repaired.sql
 |   |-- impact_report.json
@@ -426,6 +430,7 @@ hallucination-proof-codegen/
 |   `-- *_ui_evidence.png
 |-- .env.example
 |-- .gitignore
+|-- BOOTSTRAP_SMOKE_TEST.md
 |-- LICENSE
 |-- requirements.txt
 `-- requirements.lock
@@ -447,8 +452,13 @@ to silently reuse a different checkout.
 Windows PowerShell:
 
 ```powershell
-.\scripts\bootstrap_demo.ps1 -StartDataHub
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\bootstrap_demo.ps1 -StartDataHub
 ```
+
+`-ExecutionPolicy Bypass` applies only to this child PowerShell process; it does
+not change the machine or user execution policy. The script also forces UTF-8
+for Python-based CLIs so DataHub status symbols render on non-UTF-8 Windows
+code pages.
 
 Linux or macOS:
 
@@ -471,6 +481,10 @@ Use `--writeback` only when you intentionally want the passing decision added
 to DataHub. The bootstrap follows DataHub's official
 [OSS Quickstart](https://docs.datahub.com/) and
 [dbt ingestion workflow](https://docs.datahub.com/docs/generated/ingestion/sources/dbt).
+
+The final Windows integration run is documented in
+[BOOTSTRAP_SMOKE_TEST.md](BOOTSTRAP_SMOKE_TEST.md), with a
+[sanitized terminal transcript](examples/bootstrap_smoke_test_20260727.log).
 
 The equivalent manual setup is below.
 

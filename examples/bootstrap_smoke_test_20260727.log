@@ -1,0 +1,53 @@
+Fresh bootstrap smoke test (sanitized terminal transcript)
+Date: 2026-07-27
+Project commit: 8cd63b8d80616e674dc767558091dd5ccc5b0dde
+
+> git clone --depth 1 --branch main https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen.git <fresh-root>/hallucination-proof-codegen
+8cd63b8d80616e674dc767558091dd5ccc5b0dde
+
+> powershell -NoProfile -ExecutionPolicy Bypass -File scripts/bootstrap_demo.ps1 -StartDataHub -JaffleShopPath <fresh-root>/jaffle_shop_duckdb
+[1/7] Preparing the locked project environment
+[2/7] Checking local DataHub
+[3/7] Preparing dbt-labs/jaffle_shop_duckdb
+HEAD is now at 36bde6c Merge pull request #91 from dbt-labs/modernize-tooling
+[4/7] Building dbt models and documentation artifacts
+[5/7] Ingesting dbt metadata into DataHub
+[6/7] Building and governing the DataHub context
+[7/7] Optional downstream impact graph
+Bootstrap complete.
+
+> inspect examples/context_bundle.json
+table=customers
+field_count=7
+fields=customer_id,first_name,first_order,last_name,most_recent_order,number_of_orders,customer_lifetime_value
+upstream_count=3
+upstreams=stg_customers,stg_orders,stg_payments
+first_name.editedTags=["PII"]
+last_name.editedTags=["PII"]
+
+> python src/orchestrator.py run --run-id bootstrap-smoke-20260727 --require-clean-git
+Run: bootstrap-smoke-20260727
+Blind gates: {"schema":"FAIL","runtime":"FAIL","result_quality":"SKIPPED","governance":"SKIPPED"}
+Grounded initial: {"schema":"PASS","runtime":"PASS","result_quality":"PASS","governance":"FAIL"}
+Repair: attempts=1 status=PASS
+Final gates: {"schema":"PASS","runtime":"PASS","result_quality":"PASS","governance":"PASS"}
+Final NULL violations: 0
+Writeback: NOT_REQUESTED
+Manifest: 449ec0b6a81a954aea3c98832e5a6ebb49655bba028c2582c6cbb8fd3195879b
+Overall: PASS
+
+> DataHub UI verification
+customers columns: 7
+PII badges: 2 (first_name, last_name)
+Canonical evidence link:
+https://github.com/mangroveuniversemu-bot/hallucination-proof-codegen/tree/40c2b6861c7f145fba8506b87fb08be8ec61abe6/runs/20260726T182727Z-cbad85e7
+Addendum: The original entry is retained for audit history. This addendum provides the canonical commit-pinned snapshot.
+
+> replay final UTF-8 PowerShell script with existing fresh environments
+[4/7] Building dbt models and documentation artifacts
+Completed successfully
+Done. PASS=28 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=28
+[6/7] Building and governing the DataHub context
+field_count=7; upstream_count=3
+columns_verified=["first_name","last_name"]
+Bootstrap complete.

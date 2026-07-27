@@ -23,6 +23,9 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+# Keep Python-based CLIs deterministic on Windows code pages such as CP950.
+$env:PYTHONUTF8 = "1"
+$env:PYTHONIOENCODING = "utf-8"
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $JaffleShopPath = [System.IO.Path]::GetFullPath($JaffleShopPath)
 $ProjectVenv = Join-Path $RepoRoot ".venv"
